@@ -16,7 +16,7 @@ OBJ	=	$(MAIN_SRC:.c=.o) $(SRC:.c=.o)
 
 UT_OBJ	=	$(SRC:.c=.o) $(UT_SRC:.c=.o)
 
-CFLAGS	=	-Wextra -W -Wall -I ./include/ -lcsfml-graphics -lcsfml-system -lcsfml-audio -g3 -lm
+CFLAGS	=	-Wextra -W -Wall -I ./include/ -lcsfml-graphics -lcsfml-window -lcsfml-system -lcsfml-audio -g3 -lm
 
 LDFLAGS	=
 

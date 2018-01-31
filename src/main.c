@@ -20,60 +20,62 @@ sfRenderWindow *my_window_create(void)
 	return (window);
 }
 
-int events (sfRenderWindow *window, sfEvent event, angle_t *angle, int **map_3d)
+void	which_corner(sfRenderWindow *window, map_t *map)
 {
-	while (sfRenderWindow_pollEvent(window, &event)) {
-		if (event.type == sfEvtClosed)
-			sfRenderWindow_close(window);
-		if (event.type == sfEvtKeyPressed)
-			switch(event.key.code) {
-				case sfKeyUp:
-				angle->yolo_y -= 1;
-				break;
-				case sfKeyDown:
-				angle->yolo_y += 1;
-				break;
-				case sfKeyE:
-				map_3d[0][0] += 1;
-				break;
-				case sfKeyR:
-				map_3d[0][0] -= 1;
-				break;
-				default:
-				break;
-			}
-	}
-	return (0);
-}
+	sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
+	sfCircleShape *circle = sfCircleShape_create();
+	int x_max = -1;
+	int y_max = -1;
 
-void alloc(int **map_3d)
-{
+	sfCircleShape_setFillColor(circle, sfRed);
 	for (int i = 0; i < MAP_X; i++) {
-		map_3d[i] = calloc(sizeof(int), MAP_Y);
 		for (int j = 0; j < MAP_Y; j++) {
-			map_3d[i][j] = 10;
+			if (map->map_2d[i][j].x >= mouse_pos.x - 20 && map->map_2d[i][j].x <= mouse_pos.x + 20 &&
+			map->map_2d[i][j].y >= mouse_pos.y - 20 && map->map_2d[i][j].y <= mouse_pos.y + 20) {
+				x_max = (i > x_max) ? i : x_max;
+				y_max = (j > y_max) ? j : y_max;
+			}
 		}
 	}
-	map_3d[2][3] = 15;
-	map_3d[2][4] = 13;
+	if (x_max != -1 && y_max != -1)
+		map->map_3d[x_max][y_max] += 1;
 }
 
-int main(int argc, char *argv[])
+void	events(sfRenderWindow *window, sfEvent event, map_t *map)
 {
-	(void)argc;
-	(void)argv;
+	if (event.type == sfEvtClosed)
+		sfRenderWindow_close(window);
+	if (event.type == sfEvtMouseButtonPressed) {
+		if (event.mouseButton.button == sfMouseLeft)
+			which_corner(window, map);
+	}
+	if (event.type == sfEvtKeyPressed) {
+		switch(event.key.code) {
+			case sfKeyUp:
+			map->sin -= 1;
+			break;
+			case sfKeyDown:
+			map->sin += 1;
+			break;
+			default:
+			break;
+		}
+	}
+}
+
+int	main()
+{
+	map_t *map = malloc(sizeof(*map));
 	sfRenderWindow *window = my_window_create();
 	sfEvent event;
-	int **map_3d = malloc(sizeof(int *) * MAP_X);
-	angle_t *angle = malloc(sizeof(*angle));
-	sfVector2f **map_2d;
 
-	alloc(map_3d);
+	map->map_3d = create_3d_map();
 	while (sfRenderWindow_isOpen(window)) {
 		sfRenderWindow_clear(window, sfBlack);
-		map_2d = create_2d_map(map_3d, angle);
-		draw_2d_map(window, map_2d);
-		events(window, event, angle, map_3d);
+		map->map_2d = create_2d_map(map->map_3d, map);
+		draw_2d_map(window, map->map_2d);
+		while (sfRenderWindow_pollEvent(window, &event))
+			events(window, event, map);
 		sfRenderWindow_display(window);
 	}
 	sfRenderWindow_destroy(window);

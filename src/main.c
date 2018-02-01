@@ -20,37 +20,47 @@ sfRenderWindow *my_window_create(void)
 	return (window);
 }
 
-void	which_corner(sfRenderWindow *window, map_t *map)
+void	which_corner_sub(map_t *map, int i, int j)
 {
-	sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
-	sfCircleShape *circle = sfCircleShape_create();
-	int x_max = -1;
-	int y_max = -1;
-
-	sfCircleShape_setFillColor(circle, sfRed);
-	for (int i = 0; i < MAP_X; i++) {
-		for (int j = 0; j < MAP_Y; j++) {
-			if (map->map_2d[i][j].x >= mouse_pos.x - 20 && map->map_2d[i][j].x <= mouse_pos.x + 20 &&
-			map->map_2d[i][j].y >= mouse_pos.y - 20 && map->map_2d[i][j].y <= mouse_pos.y + 20) {
-				x_max = (i > x_max) ? i : x_max;
-				y_max = (j > y_max) ? j : y_max;
-			}
-		}
+	if (map->map_2d[i][j].x > map->mouse_pos.x - SCALING_X / 3 &&
+	map->map_2d[i][j].x < map->mouse_pos.x + SCALING_X / 3 &&
+	map->map_2d[i][j].y > map->mouse_pos.y - SCALING_Y / 3 &&
+	map->map_2d[i][j].y < map->mouse_pos.y + SCALING_Y / 3) {
+		map->x_max = (i > map->x_max) ? i : map->x_max;
+		map->y_max = (j > map->y_max) ? j : map->y_max;
 	}
-	if (x_max != -1 && y_max != -1)
-		map->map_3d[x_max][y_max] += 1;
 }
 
-void	events(sfRenderWindow *window, sfEvent event, map_t *map)
+void	which_corner(window_t *win, map_t *map)
 {
-	if (event.type == sfEvtClosed)
-		sfRenderWindow_close(window);
-	if (event.type == sfEvtMouseButtonPressed) {
-		if (event.mouseButton.button == sfMouseLeft)
-			which_corner(window, map);
-	}
-	if (event.type == sfEvtKeyPressed) {
-		switch(event.key.code) {
+	sfCircleShape *circle = sfCircleShape_create();
+
+	sfCircleShape_setFillColor(circle, sfRed);
+	sfCircleShape_setRadius(circle, 5);
+	for (int i = 0; i < MAP_X; i++)
+		for (int j = 0; j < MAP_Y; j++)
+			which_corner_sub(map, i, j);
+	sfCircleShape_setPosition(circle, (sfVector2f){map->map_2d[map->x_max][map->y_max].x - 5, map->map_2d[map->x_max][map->y_max].y - 5});
+	sfRenderWindow_drawCircleShape(win->window, circle, NULL);
+}
+
+void	init_map(map_t *map)
+{
+	map->x_max = -1;
+	map->y_max = -1;
+	map->sin = 35;
+	map->map_3d = create_3d_map();
+}
+
+void	events(window_t *win, map_t *map)
+{
+	if (win->event.type == sfEvtClosed)
+		sfRenderWindow_close(win->window);
+	if (win->event.type == sfEvtMouseButtonPressed &&
+	win->event.mouseButton.button == sfMouseLeft && map->x_max != -1)
+		map->map_3d[map->x_max][map->y_max] += 1;
+	if (win->event.type == sfEvtKeyPressed) {
+		switch(win->event.key.code) {
 			case sfKeyUp:
 			map->sin -= 1;
 			break;
@@ -66,17 +76,19 @@ void	events(sfRenderWindow *window, sfEvent event, map_t *map)
 int	main()
 {
 	map_t *map = malloc(sizeof(*map));
-	sfRenderWindow *window = my_window_create();
-	sfEvent event;
+	window_t *win = malloc(sizeof(*win));
 
-	map->map_3d = create_3d_map();
-	while (sfRenderWindow_isOpen(window)) {
-		sfRenderWindow_clear(window, sfBlack);
-		map->map_2d = create_2d_map(map->map_3d, map);
-		draw_2d_map(window, map->map_2d);
-		while (sfRenderWindow_pollEvent(window, &event))
-			events(window, event, map);
-		sfRenderWindow_display(window);
+	win->window = my_window_create();
+	init_map(map);
+	while (sfRenderWindow_isOpen(win->window)) {
+		sfRenderWindow_clear(win->window, sfBlack);
+		while (sfRenderWindow_pollEvent(win->window, &(win->event)))
+			events(win, map);
+		map->mouse_pos = sfMouse_getPositionRenderWindow(win->window);
+		map->map_2d =  create_2d_map(map->map_3d, map);
+		draw_2d_map(win->window, map->map_2d);
+		which_corner(win, map);
+		sfRenderWindow_display(win->window);
 	}
-	sfRenderWindow_destroy(window);
+	sfRenderWindow_destroy(win->window);
 }

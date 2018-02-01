@@ -23,7 +23,7 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 {
 	sfVector2f vec = {0, 0};
 	double angle_x = cos(45.0 / 180.0 * M_PI);
-	double angle_y = sin((35 + map->sin) / 180.0 * M_PI);
+	double angle_y = sin(map->sin / 180.0 * M_PI);
 
 	vec.x = angle_x * x - angle_x * y + 960;
 	vec.y = angle_y * y + angle_y * x - z + 470;

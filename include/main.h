@@ -26,7 +26,15 @@
 		sfVector2f **map_2d;
 		int **map_3d;
 		double sin;
-	}map_t;
+		sfVector2i mouse_pos;
+		int x_max;
+		int y_max;
+	} map_t;
+
+	typedef struct window_s {
+		sfRenderWindow *window;
+		sfEvent event;
+	} window_t;
 
 	int draw_2d_map(sfRenderWindow *, sfVector2f **);
 	sfVertexArray *create_line(sfVector2f *, sfVector2f *);

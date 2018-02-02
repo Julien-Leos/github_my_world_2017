@@ -25,6 +25,7 @@ char *my_itoa(int nb)
 	}
 	return (str);
 }
+
 int load(all_t *all)
 {
 	int fd = open("save.txt", O_RDONLY);
@@ -44,7 +45,6 @@ int save(all_t *all)
 		return -1;
 	close(fd);
 	fd = open("save.txt", O_WRONLY);
-	printf("%d\n", all->map->map_3d[0][0]);
 	for (int i = 0; i < MAP_X; i++) {
 		for (int j = 0; j < MAP_Y - 1 ; j++) {
 			write(fd, my_itoa(all->map->map_3d[i][j]), 2);
@@ -54,12 +54,12 @@ int save(all_t *all)
 	return (0);
 }
 
-int    buttonIsClicked(obj_t *obj, sfVector2i clickPosition, int *i)
+int    buttonIsClicked(obj_t *obj, sfVector2i clickPosition, int i)
 {
-	return (clickPosition.x < sfSprite_getPosition(obj[*i].sprite).x + 80 &&
-	clickPosition.x > sfSprite_getPosition(obj[*i].sprite).x &&
-	clickPosition.y < sfSprite_getPosition(obj[*i].sprite).y + 80 &&
-	clickPosition.y > sfSprite_getPosition(obj[*i].sprite).y);
+	return (clickPosition.x < sfSprite_getPosition(obj[i].sprite).x + 80 &&
+	clickPosition.x > sfSprite_getPosition(obj[i].sprite).x &&
+	clickPosition.y < sfSprite_getPosition(obj[i].sprite).y + 80 &&
+	clickPosition.y > sfSprite_getPosition(obj[i].sprite).y);
 }
 
 obj_t	create_object(sfVector2f scale, char *path, sfVector2f pos)
@@ -74,7 +74,7 @@ obj_t	create_object(sfVector2f scale, char *path, sfVector2f pos)
 	return (obj);
 }
 
-int	create_toolbox(all_t *all)
+int	init_toolbox(all_t *all)
 {
 	sfVector2f pos = {20, 30};
 	sfVector2f pos2 = {20, 160};

@@ -9,7 +9,8 @@
 
 void	init_map(map_t *map)
 {
-	map->sin = 35;
+	map->inclinaison = 35;
+	map->rotation = 45;
 	map->map_3d = create_3d_map();
 	map->map_2d = create_2d_map(map->map_3d, map);
 	map->mouse_circle =  sfCircleShape_create();
@@ -30,18 +31,18 @@ sfRenderWindow *my_window_create(void)
 	return (window);
 }
 
-void	which_corner_sub(map_t *map, int i, int j)
+void	which_select_corner(window_t *win, map_t *map, int i, int j)
 {
-	if (map->map_2d[i][j].x > map->mouse_pos.x - SCALING_X / 3 &&
-	map->map_2d[i][j].x < map->mouse_pos.x + SCALING_X / 3 &&
-	map->map_2d[i][j].y > map->mouse_pos.y - SCALING_Y / 3 &&
-	map->map_2d[i][j].y < map->mouse_pos.y + SCALING_Y / 3) {
+	if (map->map_2d[i][j].x > win->mouse_pos.x - SCALING_X / 3 &&
+	map->map_2d[i][j].x < win->mouse_pos.x + SCALING_X / 3 &&
+	map->map_2d[i][j].y > win->mouse_pos.y - SCALING_Y / 3 &&
+	map->map_2d[i][j].y < win->mouse_pos.y + SCALING_Y / 3) {
 		map->x_max = (i > map->x_max) ? i : map->x_max;
 		map->y_max = (j > map->y_max) ? j : map->y_max;
 	}
 }
 
-void	which_corner(window_t *win, map_t *map)
+void	select_corner(window_t *win, map_t *map)
 {
 	sfVector2f circle_pos = {0, 0};
 
@@ -49,7 +50,7 @@ void	which_corner(window_t *win, map_t *map)
 	map->y_max = -1;
 	for (int i = 0; i < MAP_X; i++)
 		for (int j = 0; j < MAP_Y; j++)
-			which_corner_sub(map, i, j);
+			which_select_corner(win, map, i, j);
 	if (map->x_max != -1 && map->y_max != -1) {
 		circle_pos.x = map->map_2d[map->x_max][map->y_max].x - 5;
 		circle_pos.y = map->map_2d[map->x_max][map->y_max].y - 5;
@@ -58,105 +59,210 @@ void	which_corner(window_t *win, map_t *map)
 	}
 }
 
-void	events(all_t *all)
+float	calc_sqr(sfVector2f A, sfVector2f B, sfVector2i P)
 {
-	sfVector2i mousepos = sfMouse_getPositionRenderWindow(all->win->window);
+	sfVector2f vector_D = {B.x - A.x, B.y - A.y};
+	sfVector2f vector_T = {P.x - A.x, P.y - A.y};
 
-	if (all->win->event.type == sfEvtClosed)
-		sfRenderWindow_close(all->win->window);
-	if (all->win->event.type == sfEvtMouseButtonPressed &&
-	all->win->event.mouseButton.button == sfMouseLeft && all->map->x_max != -1) {
-		all->map->map_3d[all->map->x_max][all->map->y_max] += 1;
-	} else if (all->win->event.type == sfEvtMouseButtonPressed &&
-	all->win->event.mouseButton.button == sfMouseRight && all->map->x_max != -1) {
-			all->map->map_3d[all->map->x_max][all->map->y_max] -= 1;
+	return ((vector_D.x * vector_T.y) - (vector_D.y * vector_T.x));
+}
+
+void	which_select_square(map_t *map, window_t *win, int i, int j)
+{
+	sfVector2i m_pos = win->mouse_pos;
+
+	if (calc_sqr(map->map_2d[i][j], map->map_2d[i][j + 1], m_pos) > 0 &&
+	calc_sqr(map->map_2d[i][j], map->map_2d[i + 1][j], m_pos) < 0 &&
+	calc_sqr(map->map_2d[i][j + 1], map->map_2d[i + 1][j + 1], m_pos) > 0 &&
+	calc_sqr(map->map_2d[i + 1][j], map->map_2d[i + 1][j + 1], m_pos) < 0) {
+		map->x_max = (i > map->x_max) ? i : map->x_max;
+		map->y_max = (j > map->y_max) ? j : map->y_max;
 	}
-	if (all->win->event.type == sfEvtKeyPressed) {
-		switch(all->win->event.key.code) {
+}
+
+void	select_square(window_t *win, map_t *map)
+{
+	map->x_max = -1;
+	map->y_max = -1;
+	for (int i = 0; i < MAP_X - 1; i++)
+		for (int j = 0; j < MAP_Y - 1; j++)
+			which_select_square(map, win, i, j);
+}
+
+void	up_square(map_t *map)
+{
+	if (map->x_max != -1 && map->y_max != -1) {
+		map->map_3d[map->x_max][map->y_max] += 1;
+		map->map_3d[map->x_max][map->y_max + 1] += 1;
+		map->map_3d[map->x_max + 1][map->y_max] += 1;
+		map->map_3d[map->x_max + 1][map->y_max + 1] += 1;
+	}
+}
+
+void	up_corner(map_t *map)
+{
+	if (map->x_max != -1 && map->y_max != -1)
+		map->map_3d[map->x_max][map->y_max] += 1;
+}
+
+void	down_corner(map_t *map)
+{
+	if (map->x_max != -1)
+		map->map_3d[map->x_max][map->y_max] -= 1;
+}
+
+void	up_tool(map_t *map, obj_t *obj)
+{
+	if (obj->num_tool == 0)
+		up_corner(map);
+	else if (obj->num_tool == 1)
+		up_square(map);
+}
+
+void	change_tool(obj_t *obj)
+{
+	obj->num_tool += 1;
+	if (obj->num_tool > 1)
+		obj->num_tool = 0;
+}
+
+void	events(all_t *all, window_t *win, map_t *map)
+{
+	if (win->event.type == sfEvtClosed)
+		sfRenderWindow_close(win->window);
+	if (win->event.type == sfEvtMouseButtonPressed) {
+		switch (win->event.mouseButton.button) {
+			case sfMouseLeft:
+			up_tool(map, all->obj);
+			break;
+			case sfMouseRight:
+			down_corner(map);
+			break;
+			default:
+			break;
+		}
+		switch (all->obj->num_button) {
+			case 0:
+			save(all);
+			break;
+			case 1:
+			load(all);
+			break;
+			case 2:
+			change_tool(all->obj);
+			break;
+		}
+	}
+	if (win->event.type == sfEvtKeyPressed) {
+		switch(win->event.key.code) {
 			case sfKeyUp:
-			all->map->sin -= 1;
+			map->inclinaison -= 1;
 			break;
 			case sfKeyDown:
-			all->map->sin += 1;
+			map->inclinaison += 1;
+			break;
+			case sfKeyLeft:
+			map->rotation -= 1;
+			break;
+			case sfKeyRight:
+			map->rotation += 1;
 			break;
 			default:
 			break;
 		}
 	}
-
-	if (all->win->event.type == sfEvtMouseButtonPressed)
-		for (int i = 0; i != 8; i++)
-			if (buttonIsClicked(all->obj, mousepos, &i) == 1)
-				switch (i) {
-				case 0:
-				save(all);
-				break;
-				case 1:
-				load(all);
-				break;
-/*				case 2:
-				altitude_down();
-				break;
-				case 3:
-				zoom_up();
-				break;
-				case 4:
-				zoom_down();
-				break;
-				case 5:
-				egalise();
-				break;
-				case 6:
-				home();
-				break;
-				case 7:
-				altitude_up();
-				*/
-			}
 }
 
-void	my_free(window_t *win, map_t *map)
+void	my_free(all_t *all)
 {
 	for (int i = 0; i < MAP_X; i++) {
-		free (map->map_2d[i]);
-		free (map->map_3d[i]);
+		free (all->map->map_2d[i]);
+		free (all->map->map_3d[i]);
 	}
+	free (all->map->map_2d);
+	free (all->map->map_3d);
+	sfCircleShape_destroy(all->map->mouse_circle);
+	free (all->map);
+	for (int i = 0; i < 8; i++) {
+		sfSprite_destroy(all->obj[i].sprite);
+		sfTexture_destroy(all->obj[i].text);
+	}
+	free (all->obj);
+	sfRectangleShape_destroy(all->button->rect);
+	free (all->button);
+	sfRenderWindow_destroy(all->win->window);
+	free (all->win);
+	free (all);
+}
+
+void	which_button(window_t *win, obj_t *obj)
+{
+	for (int i = 0; i != 8; i++) {
+		if (buttonIsClicked(obj, win->mouse_pos, i) == 1) {
+			obj->num_button = i;
+			break;
+		} else
+			obj->num_button = -1;
+	}
+}
+
+void	draw_toolbox(window_t *win, obj_t *obj, button_t *button)
+{
+	for (int i = 0; i != 8; i++)
+		sfRenderWindow_drawSprite(win->window, obj[i].sprite, NULL);
+	sfRenderWindow_drawRectangleShape(win->window, button->rect, NULL);
+}
+
+void	draw_circle_corner(window_t *win, map_t *map, obj_t *obj)
+{
+	for (int i = 0; i < MAP_X; i++)
+		free (map->map_2d[i]);
 	free (map->map_2d);
-	free (map->map_3d);
-	sfCircleShape_destroy(map->mouse_circle);
-	free (map);
-	sfRenderWindow_destroy(win->window);
-	free (win);
+	map->map_2d =  create_2d_map(map->map_3d, map);
+	draw_2d_map(win->window, map->map_2d);
+	if (obj->num_tool == 0)
+		select_corner(win, map);
+	else if (obj->num_tool == 1)
+		select_square(win, map);
+}
+
+void	init_window(window_t *win)
+{
+	win->window = my_window_create();
+	win->mouse_pos = sfMouse_getPositionRenderWindow(win->window);
+}
+
+void	init_all(all_t *all)
+{
+	all->map = malloc(sizeof(*all->map));
+	all->button = malloc(sizeof(*all->button));
+	all->win = malloc(sizeof(*all->win));
+	all->obj = malloc(sizeof(*all->obj) * 8);
+	init_window(all->win);
+	init_map(all->map);
+	init_toolbox(all);
+}
+
+void	draw_window(window_t *win)
+{
+	sfRenderWindow_display(win->window);
+	sfRenderWindow_clear(win->window, sfBlack);
+	win->mouse_pos = sfMouse_getPositionRenderWindow(win->window);
 }
 
 int	main()
 {
 	all_t *all = malloc(sizeof(*all));
-	all->map = malloc(sizeof(*all->map));
-	all->button = malloc(sizeof(*all->button));
-	all->win = malloc(sizeof(*all->win));
-	all->obj = malloc(sizeof(obj_t) * 8);
-	all->win->window = my_window_create();
 
-	create_toolbox(all);
-	init_map(all->map);
+	init_all(all);
 	while (sfRenderWindow_isOpen(all->win->window)) {
-		sfRenderWindow_clear(all->win->window, sfBlack);
-		while (sfRenderWindow_pollEvent(all->win->window, &(all->win->event)))
-			events(all);
-		all->map->mouse_pos = sfMouse_getPositionRenderWindow(all->win->window);
-		all->map->map_2d = create_2d_map(all->map->map_3d, all->map);
-		for (int i = 0; i < MAP_X; i++)
-			free (all->map->map_2d[i]);
-		free (all->map->map_2d);
-		all->map->map_2d =  create_2d_map(all->map->map_3d, all->map);
-		draw_2d_map(all->win->window, all->map->map_2d);
-		which_corner(all->win, all->map);
-		for (int i = 0; i != 8; i++)
-			sfRenderWindow_drawSprite(all->win->window, all->obj[i].sprite, NULL);
-		sfRenderWindow_drawRectangleShape(all->win->window, all->button->rect, NULL);
-		sfRenderWindow_display(all->win->window);
+		which_button(all->win, all->obj);
+		while (RW_PE(all->win->window, &(all->win->event)))
+			events(all, all->win, all->map);
+		draw_circle_corner(all->win, all->map, all->obj);
+		draw_toolbox(all->win, all->obj, all->button);
+		draw_window(all->win);
 	}
-	my_free(all->win, all->map);
+	my_free(all);
 	return (0);
 }

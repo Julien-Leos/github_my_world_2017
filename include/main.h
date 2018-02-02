@@ -19,7 +19,8 @@
 	#include <fcntl.h>
 	#include <math.h>
 
-	#define RDVA	sfRenderWindow_drawVertexArray
+	#define RW_DVA	sfRenderWindow_drawVertexArray
+	#define RW_PE sfRenderWindow_pollEvent
 	#define MAP_X	10
 	#define MAP_Y	10
 	#define SCALING_X 90
@@ -29,8 +30,8 @@
 	typedef struct map_s {
 		sfVector2f **map_2d;
 		int **map_3d;
-		double sin;
-		sfVector2i mouse_pos;
+		double inclinaison;
+		double rotation;
 		int x_max;
 		int y_max;
 		sfCircleShape *mouse_circle;
@@ -38,8 +39,10 @@
 
 	typedef struct obj_s {
 		sfSprite *sprite;
-		sfTexture* text;
+		sfTexture *text;
 		sfVector2f pos;
+		int num_button;
+		int num_tool;
 	} obj_t;
 
 	typedef struct button_s {
@@ -49,6 +52,7 @@
 	typedef struct window_s {
 		sfRenderWindow *window;
 		sfEvent event;
+		sfVector2i mouse_pos;
 	} window_t;
 
 	typedef struct all_s {
@@ -64,8 +68,8 @@
 	sfVector2f **create_2d_map(int **, map_t *);
 	int **create_3d_map();
 	obj_t create_object(sfVector2f, char *, sfVector2f);
-	int create_toolbox(all_t *);
-	int buttonIsClicked(obj_t *, sfVector2i, int *);
+	int init_toolbox(all_t *);
+	int buttonIsClicked(obj_t *, sfVector2i, int);
 	char *my_itoa(int);
 	int save(all_t *);
 	char *get_next_line(int);

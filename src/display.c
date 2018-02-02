@@ -19,16 +19,21 @@
 
 int draw_2d_map(sfRenderWindow *window, sfVector2f **map_2d)
 {
+	sfVertexArray *tmp = NULL;
 
 	for (int i = 0; i < MAP_X; i++) {
-		for (int j = 0; j < MAP_Y - 1 ; j++)
-			RDVA(window,
-			create_line(&map_2d[i][j], &map_2d[i][j + 1]), NULL);
+		for (int j = 0; j < MAP_Y - 1 ; j++) {
+			tmp = create_line(&map_2d[i][j], &map_2d[i][j + 1]);
+			RW_DVA(window, tmp, NULL);
+			sfVertexArray_destroy(tmp);
+		}
 	}
 	for (int i = 0; i < MAP_X; i++) {
-		for (int j = 0; j < MAP_Y - 1; j++)
-			RDVA(window,
-			create_line(&map_2d[j][i], &map_2d[j + 1][i]), NULL);
+		for (int j = 0; j < MAP_Y - 1; j++) {
+			tmp = create_line(&map_2d[j][i], &map_2d[j + 1][i]);
+			RW_DVA(window, tmp, NULL);
+			sfVertexArray_destroy(tmp);
+		}
 	}
 	return (0);
 }

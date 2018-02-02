@@ -27,7 +27,6 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 
 	vec.x = angle_x * x - angle_x * y + 960;
 	vec.y = angle_y * y + angle_y * x - z + 470;
-
 	return(vec);
 }
 

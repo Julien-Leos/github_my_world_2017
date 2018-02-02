@@ -30,7 +30,8 @@
 	typedef struct map_s {
 		sfVector2f **map_2d;
 		int **map_3d;
-		double sin;
+		double inclinaison;
+		double rotation;
 		int x_max;
 		int y_max;
 		sfCircleShape *mouse_circle;
@@ -41,6 +42,7 @@
 		sfTexture *text;
 		sfVector2f pos;
 		int num_button;
+		int num_tool;
 	} obj_t;
 
 	typedef struct button_s {

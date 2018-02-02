@@ -22,11 +22,25 @@ sfVertexArray *create_line(sfVector2f *point1, sfVector2f *point2)
 sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 {
 	sfVector2f vec = {0, 0};
-	double angle_x = cos(45.0 / 180.0 * M_PI);
-	double angle_y = sin(map->sin / 180.0 * M_PI);
+	double rotation = (map->rotation / 180.0 * M_PI);
+	double inclinaison = (map->inclinaison / 180.0 * M_PI);
+	int x_origine = 0;
+	int y_origine = 0;
+	if (MAP_X % 2 == 0) {
+		x_origine = (SCALING_X * (MAP_X - 1)) / 2;
+		y_origine = (SCALING_Y * (MAP_Y - 1)) / 2;
+	} else {
+		x_origine = (SCALING_X * MAP_X) / 2;
+		y_origine = (SCALING_Y * MAP_Y) / 2;
+	}
 
-	vec.x = angle_x * x - angle_x * y + 960;
-	vec.y = angle_y * y + angle_y * x - z + 470;
+	vec.x = (x - x_origine) * cos (rotation) + (y - y_origine) * sin (rotation) + x_origine;
+	vec.y = - (x - x_origine) * sin (rotation) + (y - y_origine) * cos (rotation) + y_origine;
+
+	vec.y = (vec.y - y_origine) * cos (inclinaison) - (z) * sin (inclinaison) + y_origine;
+
+	vec.x += 1920 / 2 - x_origine;
+	vec.y += 1080 / 2 - y_origine;
 	return(vec);
 }
 
@@ -37,7 +51,7 @@ int	**create_3d_map()
 	for (int i = 0; i < MAP_X; i++) {
 		map_3d[i] = malloc(sizeof(int) * MAP_Y);
 		for (int j = 0; j < MAP_Y; j++)
-			map_3d[i][j] = 10;
+			map_3d[i][j] = 0;
 	}
 	return (map_3d);
 }

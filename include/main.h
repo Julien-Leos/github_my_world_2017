@@ -38,7 +38,7 @@
 
 	typedef struct obj_s {
 		sfSprite *sprite;
-		sfTexture* text;
+		sfTexture *text;
 		sfVector2f pos;
 		int num_button;
 	} obj_t;

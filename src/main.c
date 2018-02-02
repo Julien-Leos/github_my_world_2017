@@ -108,20 +108,26 @@ void	events(all_t *all, window_t *win, map_t *map)
 	}
 }
 
-
-
-void	my_free(window_t *win, map_t *map)
+void	my_free(all_t *all)
 {
 	for (int i = 0; i < MAP_X; i++) {
-		free (map->map_2d[i]);
-		free (map->map_3d[i]);
+		free (all->map->map_2d[i]);
+		free (all->map->map_3d[i]);
 	}
-	free (map->map_2d);
-	free (map->map_3d);
-	sfCircleShape_destroy(map->mouse_circle);
-	free (map);
-	sfRenderWindow_destroy(win->window);
-	free (win);
+	free (all->map->map_2d);
+	free (all->map->map_3d);
+	sfCircleShape_destroy(all->map->mouse_circle);
+	free (all->map);
+	for (int i = 0; i < 8; i++) {
+		sfSprite_destroy(all->obj[i].sprite);
+		sfTexture_destroy(all->obj[i].text);
+	}
+	free (all->obj);
+	sfRectangleShape_destroy(all->button->rect);
+	free (all->button);
+	sfRenderWindow_destroy(all->win->window);
+	free (all->win);
+	free (all);
 }
 
 void	which_button(window_t *win, obj_t *obj)
@@ -163,7 +169,7 @@ void	init_all(all_t *all)
 	all->map = malloc(sizeof(*all->map));
 	all->button = malloc(sizeof(*all->button));
 	all->win = malloc(sizeof(*all->win));
-	all->obj = malloc(sizeof(obj_t) * 8);
+	all->obj = malloc(sizeof(*all->obj) * 8);
 	init_window(all->win);
 	init_map(all->map);
 	init_toolbox(all);
@@ -189,6 +195,6 @@ int	main()
 		draw_toolbox(all->win, all->obj, all->button);
 		draw_window(all->win);
 	}
-	my_free(all->win, all->map);
+	my_free(all);
 	return (0);
 }

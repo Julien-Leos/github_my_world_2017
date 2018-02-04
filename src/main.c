@@ -31,12 +31,29 @@ sfRenderWindow *my_window_create(void)
 	return (window);
 }
 
+void	draw_square(sfRenderWindow *win, sfCircleShape *circle, sfVector2f pos)
+{
+	sfCircleShape_setPosition(circle, pos);
+	sfRenderWindow_drawCircleShape(win, circle, NULL);
+}
+
+int	is_mouse_on_toolbox(sfVector2i mouse_pos)
+{
+	if (mouse_pos.x >= 0 && mouse_pos.x <= 128)
+		return (1);
+	return (0);
+}
+
 void	which_select_corner(window_t *win, map_t *map, int i, int j)
 {
+	// sfVector2f tmp1 = {map->map_2d[4][4].x, map->map_2d[4][4].y};
+	// sfVector2f tmp2 = {map->map_2d[4][4].x + 1.41 * SCALING_X, map->map_2d[4][4].y};
+	// RW_DVA(win->window, create_line(&tmp1, &tmp2), NULL);
 	if (map->map_2d[i][j].x > win->mouse_pos.x - SCALING_X / 3 &&
 	map->map_2d[i][j].x < win->mouse_pos.x + SCALING_X / 3 &&
 	map->map_2d[i][j].y > win->mouse_pos.y - SCALING_Y / 3 &&
-	map->map_2d[i][j].y < win->mouse_pos.y + SCALING_Y / 3) {
+	map->map_2d[i][j].y < win->mouse_pos.y + SCALING_Y / 3 &&
+	is_mouse_on_toolbox(win->mouse_pos) == 0) {
 		map->x_max = (i > map->x_max) ? i : map->x_max;
 		map->y_max = (j > map->y_max) ? j : map->y_max;
 	}
@@ -54,8 +71,7 @@ void	select_corner(window_t *win, map_t *map)
 	if (map->x_max != -1 && map->y_max != -1) {
 		circle_pos.x = map->map_2d[map->x_max][map->y_max].x - 5;
 		circle_pos.y = map->map_2d[map->x_max][map->y_max].y - 5;
-		sfCircleShape_setPosition(map->mouse_circle, circle_pos);
-		sfRenderWindow_drawCircleShape(win->window, map->mouse_circle, NULL);
+		draw_square(win->window, map->mouse_circle, circle_pos);
 	}
 }
 
@@ -74,7 +90,8 @@ void	which_select_square(map_t *map, window_t *win, int i, int j)
 	if (calc_sqr(map->map_2d[i][j], map->map_2d[i][j + 1], m_pos) > 0 &&
 	calc_sqr(map->map_2d[i][j], map->map_2d[i + 1][j], m_pos) < 0 &&
 	calc_sqr(map->map_2d[i][j + 1], map->map_2d[i + 1][j + 1], m_pos) > 0 &&
-	calc_sqr(map->map_2d[i + 1][j], map->map_2d[i + 1][j + 1], m_pos) < 0) {
+	calc_sqr(map->map_2d[i + 1][j], map->map_2d[i + 1][j + 1], m_pos) < 0 &&
+	is_mouse_on_toolbox(win->mouse_pos) == 0) {
 		map->x_max = (i > map->x_max) ? i : map->x_max;
 		map->y_max = (j > map->y_max) ? j : map->y_max;
 	}
@@ -82,11 +99,27 @@ void	which_select_square(map_t *map, window_t *win, int i, int j)
 
 void	select_square(window_t *win, map_t *map)
 {
+	sfVector2f circle_pos = {0, 0};
+
 	map->x_max = -1;
 	map->y_max = -1;
 	for (int i = 0; i < MAP_X - 1; i++)
 		for (int j = 0; j < MAP_Y - 1; j++)
 			which_select_square(map, win, i, j);
+	if (map->x_max != -1 && map->y_max != -1) {
+		circle_pos.x = map->map_2d[map->x_max][map->y_max].x - 5;
+		circle_pos.y = map->map_2d[map->x_max][map->y_max].y - 5;
+		draw_square(win->window, map->mouse_circle, circle_pos);
+		circle_pos.x = map->map_2d[map->x_max][map->y_max + 1].x - 5;
+		circle_pos.y = map->map_2d[map->x_max][map->y_max + 1].y - 5;
+		draw_square(win->window, map->mouse_circle, circle_pos);
+		circle_pos.x = map->map_2d[map->x_max + 1][map->y_max].x - 5;
+		circle_pos.y = map->map_2d[map->x_max + 1][map->y_max].y - 5;
+		draw_square(win->window, map->mouse_circle, circle_pos);
+		circle_pos.x = map->map_2d[map->x_max + 1][map->y_max + 1].x - 5;
+		circle_pos.y = map->map_2d[map->x_max + 1][map->y_max + 1].y - 5;
+		draw_square(win->window, map->mouse_circle, circle_pos);
+	}
 }
 
 void	up_square(map_t *map)
@@ -105,6 +138,16 @@ void	up_corner(map_t *map)
 		map->map_3d[map->x_max][map->y_max] += 1;
 }
 
+void	down_square(map_t *map)
+{
+	if (map->x_max != -1 && map->y_max != -1) {
+		map->map_3d[map->x_max][map->y_max] -= 1;
+		map->map_3d[map->x_max][map->y_max + 1] -= 1;
+		map->map_3d[map->x_max + 1][map->y_max] -= 1;
+		map->map_3d[map->x_max + 1][map->y_max + 1] -= 1;
+	}
+}
+
 void	down_corner(map_t *map)
 {
 	if (map->x_max != -1)
@@ -117,6 +160,14 @@ void	up_tool(map_t *map, obj_t *obj)
 		up_corner(map);
 	else if (obj->num_tool == 1)
 		up_square(map);
+}
+
+void	down_tool(map_t *map, obj_t *obj)
+{
+	if (obj->num_tool == 0)
+		down_corner(map);
+	else if (obj->num_tool == 1)
+		down_square(map);
 }
 
 void	change_tool(obj_t *obj)
@@ -136,7 +187,7 @@ void	events(all_t *all, window_t *win, map_t *map)
 			up_tool(map, all->obj);
 			break;
 			case sfMouseRight:
-			down_corner(map);
+			down_tool(map, all->obj);
 			break;
 			default:
 			break;

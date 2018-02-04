@@ -26,6 +26,7 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 	double inclinaison = (map->inclinaison / 180.0 * M_PI);
 	int x_origine = 0;
 	int y_origine = 0;
+
 	if (MAP_X % 2 == 0) {
 		x_origine = (SCALING_X * (MAP_X - 1)) / 2;
 		y_origine = (SCALING_Y * (MAP_Y - 1)) / 2;
@@ -33,12 +34,9 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 		x_origine = (SCALING_X * MAP_X) / 2;
 		y_origine = (SCALING_Y * MAP_Y) / 2;
 	}
-
 	vec.x = (x - x_origine) * cos (rotation) + (y - y_origine) * sin (rotation) + x_origine;
 	vec.y = - (x - x_origine) * sin (rotation) + (y - y_origine) * cos (rotation) + y_origine;
-
 	vec.y = (vec.y - y_origine) * cos (inclinaison) - (z) * sin (inclinaison) + y_origine;
-
 	vec.x += 1920 / 2 - x_origine;
 	vec.y += 1080 / 2 - y_origine;
 	return(vec);

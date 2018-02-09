@@ -204,19 +204,37 @@ void	events(all_t *all, window_t *win, map_t *map)
 			break;
 		}
 	}
+	if (win->event.type ==  sfEvtMouseWheelScrolled) {
+		if (win->event.mouseWheelScroll.delta == 1 && map->zoom < 3)
+			map->zoom += 0.01;
+		if (win->event.mouseWheelScroll.delta == -1 && map->zoom > 0.1)
+			map->zoom -= 0.01;
+		}
 	if (win->event.type == sfEvtKeyPressed) {
 		switch(win->event.key.code) {
-			case sfKeyUp:
+			case sfKeyZ:
 			map->inclinaison -= 1;
 			break;
-			case sfKeyDown:
+			case sfKeyS:
 			map->inclinaison += 1;
 			break;
-			case sfKeyLeft:
+			case sfKeyQ:
 			map->rotation -= 1;
 			break;
-			case sfKeyRight:
+			case sfKeyD:
 			map->rotation += 1;
+			break;
+			case sfKeyLeft:
+			map->move_x += 10;
+			break;
+			case sfKeyRight:
+			map->move_x -= 10;
+			break;
+			case sfKeyUp:
+			map->move_y += 10;
+			break;
+			case sfKeyDown:
+			map->move_y -= 10;
 			break;
 			default:
 			break;
@@ -304,8 +322,8 @@ void	draw_window(window_t *win)
 int	main()
 {
 	all_t *all = malloc(sizeof(*all));
-
 	init_all(all);
+	all->map->zoom = 1;
 	while (sfRenderWindow_isOpen(all->win->window)) {
 		which_button(all->win, all->obj);
 		while (RW_PE(all->win->window, &(all->win->event)))

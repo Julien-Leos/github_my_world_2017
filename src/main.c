@@ -277,6 +277,12 @@ void	events(all_t *all, window_t *win, map_t *map)
 			case sfKeyDown:
 			map->move_y -= 10;
 			break;
+			case sfKeyO:
+			map->zoom += 0.01;
+			break;
+			case sfKeyL:
+			map->zoom -= 0.01;
+			break;
 			default:
 			break;
 		}

@@ -17,7 +17,7 @@ int my_putstrfd(int fd, char *str)
 	return (0);
 }
 
-char *my_itoa(int nb)
+char	*my_itoa(float nb)
 {
 	int len = 0;
 	char *str;

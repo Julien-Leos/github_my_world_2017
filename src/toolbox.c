@@ -7,7 +7,17 @@
 
 #include "main.h"
 
-char *my_itoa(float nb)
+int my_putstrfd(int fd, char *str)
+{
+	int i = 0;
+	while (str[i] != '\0') {
+		write(fd, &str[i], 1);
+		i++;
+	}
+	return (0);
+}
+
+char *my_itoa(int nb)
 {
 	int len = 0;
 	char *str;
@@ -47,7 +57,7 @@ int save(all_t *all)
 	fd = open("save.txt", O_WRONLY);
 	for (int i = 0; i < MAP_X; i++) {
 		for (int j = 0; j < MAP_Y - 1 ; j++) {
-			write(fd, my_itoa(all->map->map_3d[i][j]), 2);
+			my_putstrfd(fd, my_itoa(all->map->map_3d[i][j]));
 			write(fd, "\n", 1);
 		}
 	}

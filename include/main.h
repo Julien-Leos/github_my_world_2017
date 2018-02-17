@@ -66,8 +66,9 @@
 		window_t *win;
 	} all_t;
 
-	int draw_2d_map(sfRenderWindow *, sfVector2f **);
+	void draw_2d_map(sfRenderWindow *, sfVector2f **);
 	sfVertexArray *create_line(sfVector2f *, sfVector2f *);
+	sfVertexArray *create_quads(sfVector2f *, sfVector2f *, sfVector2f *, sfVector2f *);
 	sfVector2f project_iso_point(int, int, int, map_t *);
 	sfVector2f **create_2d_map(float **, map_t *);
 	float **create_3d_map();

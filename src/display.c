@@ -5,35 +5,31 @@
 ** Main file.
 */
 
-#include <SFML/Graphics.h>
-#include <SFML/Graphics/Color.h>
-#include <SFML/Window.h>
-#include <SFML/Audio.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <math.h>
 #include "main.h"
 
-int draw_2d_map(sfRenderWindow *window, sfVector2f **map_2d)
+void	draw_2d_map(sfRenderWindow *window, sfVector2f **map_2d)
 {
 	sfVertexArray *tmp = NULL;
+	sfRenderStates state;
+	sfTexture *grass= sfTexture_createFromFile("assets/grass1.png", NULL);
+	state.texture = grass;
 
-	for (int i = 0; i < MAP_X; i++) {
+	for (int i = 0; i < MAP_X - 1; i++) {
 		for (int j = 0; j < MAP_Y - 1 ; j++) {
-			tmp = create_line(&map_2d[i][j], &map_2d[i][j + 1]);
-			RW_DVA(window, tmp, NULL);
+			tmp = create_quads(&map_2d[i][j], &map_2d[i][j + 1],
+				&map_2d[i + 1][j + 1], &map_2d[i + 1][j]);
+			RW_DVA(window, tmp, &state);
+			printf("segfault\n");
 			sfVertexArray_destroy(tmp);
 		}
 	}
 	for (int i = 0; i < MAP_X; i++) {
-		for (int j = 0; j < MAP_Y - 1; j++) {
+		for (int j = 0; j < MAP_Y - 1 ; j++) {
+			tmp = create_line(&map_2d[i][j], &map_2d[i][j + 1]);
+			RW_DVA(window, tmp, NULL);
 			tmp = create_line(&map_2d[j][i], &map_2d[j + 1][i]);
 			RW_DVA(window, tmp, NULL);
 			sfVertexArray_destroy(tmp);
 		}
 	}
-	return (0);
 }

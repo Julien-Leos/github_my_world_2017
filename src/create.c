@@ -19,6 +19,23 @@ sfVertexArray *create_line(sfVector2f *point1, sfVector2f *point2)
 	return (vertex_array);
 }
 
+sfVertexArray *create_quads(sfVector2f *point1, sfVector2f *point2,
+	sfVector2f *point3, sfVector2f *point4)
+{
+	sfVertexArray *vertex_array = sfVertexArray_create();
+	sfVertex vertex1 = {.position = *point1, .color = sfColor_fromRGBA(255, 255, 255, 50), .texCoords = (sfVector2f){0, 0}};
+	sfVertex vertex2 = {.position = *point2, .color = sfColor_fromRGBA(255, 255, 255, 50), .texCoords = (sfVector2f){0, 0}};
+	sfVertex vertex3 = {.position = *point3, .color = sfColor_fromRGBA(255, 255, 255, 50), .texCoords = (sfVector2f){0, 0}};
+	sfVertex vertex4 = {.position = *point4, .color = sfColor_fromRGBA(255, 255, 255, 50), .texCoords = (sfVector2f){0, 0}};
+
+	sfVertexArray_append(vertex_array, vertex1);
+	sfVertexArray_append(vertex_array, vertex2);
+	sfVertexArray_append(vertex_array, vertex3);
+	sfVertexArray_append(vertex_array, vertex4);
+	sfVertexArray_setPrimitiveType(vertex_array, sfQuads);
+	return (vertex_array);
+}
+
 sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 {
 	sfVector2f vec = {0, 0};

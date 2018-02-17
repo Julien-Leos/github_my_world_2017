@@ -34,9 +34,9 @@
 		double rotation;
 		int x_max;
 		int y_max;
-		float zoom;
 		int move_x;
 		int move_y;
+		float zoom;
 		sfCircleShape *mouse_circle;
 	} map_t;
 

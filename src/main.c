@@ -20,7 +20,10 @@ void	init_map(map_t *map)
 	map->rotation = 45;
 	map->map_3d = create_3d_map();
 	map->map_2d = create_2d_map(map->map_3d, map);
-	map->mouse_circle =  sfCircleShape_create();
+	map->move_x = 0;
+	map->move_y = 0;
+	map->zoom = 1;
+	map->mouse_circle = sfCircleShape_create();
 	sfCircleShape_setFillColor(map->mouse_circle, sfRed);
 	sfCircleShape_setRadius(map->mouse_circle, 5);
 }
@@ -371,7 +374,6 @@ int	main()
 {
 	all_t *all = malloc(sizeof(*all));
 	init_all(all);
-	all->map->zoom = 1;
 	while (sfRenderWindow_isOpen(all->win->window)) {
 		which_button(all->win, all->obj);
 		while (RW_PE(all->win->window, &(all->win->event)))

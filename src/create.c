@@ -42,9 +42,9 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 	return(vec);
 }
 
-int	**create_3d_map()
+float	**create_3d_map()
 {
-	int **map_3d = malloc(sizeof(int *) * MAP_X);
+	float **map_3d = malloc(sizeof(int *) * MAP_X);
 
 	for (int i = 0; i < MAP_X; i++) {
 		map_3d[i] = malloc(sizeof(int) * MAP_Y);
@@ -54,7 +54,7 @@ int	**create_3d_map()
 	return (map_3d);
 }
 
-sfVector2f **create_2d_map(int **map_3d, map_t *map)
+sfVector2f **create_2d_map(float **map_3d, map_t *map)
 {
 	sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * (MAP_X));
 

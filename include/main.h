@@ -29,7 +29,7 @@
 
 	typedef struct map_s {
 		sfVector2f **map_2d;
-		int **map_3d;
+		float **map_3d;
 		double inclinaison;
 		double rotation;
 		int x_max;
@@ -43,6 +43,7 @@
 		sfVector2f pos;
 		int num_button;
 		int num_tool;
+		int num_brush;
 	} obj_t;
 
 	typedef struct button_s {
@@ -65,12 +66,12 @@
 	int draw_2d_map(sfRenderWindow *, sfVector2f **);
 	sfVertexArray *create_line(sfVector2f *, sfVector2f *);
 	sfVector2f project_iso_point(int, int, int, map_t *);
-	sfVector2f **create_2d_map(int **, map_t *);
-	int **create_3d_map();
+	sfVector2f **create_2d_map(float **, map_t *);
+	float **create_3d_map();
 	obj_t create_object(sfVector2f, char *, sfVector2f);
 	int init_toolbox(all_t *);
 	int buttonIsClicked(obj_t *, sfVector2i, int);
-	char *my_itoa(int);
+	char *my_itoa(float);
 	int save(all_t *);
 	char *get_next_line(int);
 	int my_getnbr(char *);

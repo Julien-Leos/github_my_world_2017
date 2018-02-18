@@ -23,10 +23,10 @@ sfVertexArray *create_quads(sfVector2f *point1, sfVector2f *point2,
 	sfVector2f *point3, sfVector2f *point4)
 {
 	sfVertexArray *vertex_array = sfVertexArray_create();
-	sfVertex vertex1 = {.position = *point1, .color = sfColor_fromRGBA(255, 255, 255, 50), .texCoords = (sfVector2f){0, 0}};
-	sfVertex vertex2 = {.position = *point2, .color = sfColor_fromRGBA(255, 255, 255, 50), .texCoords = (sfVector2f){0, 0}};
-	sfVertex vertex3 = {.position = *point3, .color = sfColor_fromRGBA(255, 255, 255, 50), .texCoords = (sfVector2f){0, 0}};
-	sfVertex vertex4 = {.position = *point4, .color = sfColor_fromRGBA(255, 255, 255, 50), .texCoords = (sfVector2f){0, 0}};
+	sfVertex vertex1 = {.position = *point1, .color = sfColor_fromRGBA(255, 255, 255, 255), .texCoords = (sfVector2f){0, 0}};
+	sfVertex vertex2 = {.position = *point2, .color = sfColor_fromRGBA(255, 255, 255, 255), .texCoords = (sfVector2f){0, 90}};
+	sfVertex vertex3 = {.position = *point3, .color = sfColor_fromRGBA(255, 255, 255, 255), .texCoords = (sfVector2f){90, 90}};
+	sfVertex vertex4 = {.position = *point4, .color = sfColor_fromRGBA(255, 255, 255, 255), .texCoords = (sfVector2f){90, 0}};
 
 	sfVertexArray_append(vertex_array, vertex1);
 	sfVertexArray_append(vertex_array, vertex2);

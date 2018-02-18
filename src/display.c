@@ -12,14 +12,20 @@ void	draw_2d_map(sfRenderWindow *window, sfVector2f **map_2d)
 	sfVertexArray *tmp = NULL;
 	sfRenderStates state;
 	sfTexture *grass= sfTexture_createFromFile("assets/grass1.png", NULL);
+	// sfSprite *lol = sfSprite_create();
+	// sfSprite_setTexture(lol, grass, sfTrue);
+	// sfSprite_setTextureRect(lol, (sfIntRect){0, 0, 90, 90});
+	// sfRenderWindow_drawSprite(window, lol, NULL);
+	state.shader = NULL;
 	state.texture = grass;
+	state.transform = sfTransform_Identity;
+	state.blendMode = sfBlendNone;
 
 	for (int i = 0; i < MAP_X - 1; i++) {
 		for (int j = 0; j < MAP_Y - 1 ; j++) {
 			tmp = create_quads(&map_2d[i][j], &map_2d[i][j + 1],
 				&map_2d[i + 1][j + 1], &map_2d[i + 1][j]);
 			RW_DVA(window, tmp, &state);
-			printf("segfault\n");
 			sfVertexArray_destroy(tmp);
 		}
 	}

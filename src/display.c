@@ -12,6 +12,7 @@ void	draw_2d_map(sfRenderWindow *window, sfVector2f **map_2d)
 	sfVertexArray *tmp = NULL;
 	sfRenderStates state;
 	sfTexture *grass= sfTexture_createFromFile("assets/grass1.png", NULL);
+	sfTexture *rock= sfTexture_createFromFile("assets/rock.jpg", NULL);
 	// sfSprite *lol = sfSprite_create();
 	// sfSprite_setTexture(lol, grass, sfTrue);
 	// sfSprite_setTextureRect(lol, (sfIntRect){0, 0, 90, 90});
@@ -29,7 +30,7 @@ void	draw_2d_map(sfRenderWindow *window, sfVector2f **map_2d)
 			sfVertexArray_destroy(tmp);
 		}
 	}
-	for (int i = 0; i < MAP_X; i++) {
+	/*for (int i = 0; i < MAP_X; i++) {
 		for (int j = 0; j < MAP_Y - 1 ; j++) {
 			tmp = create_line(&map_2d[i][j], &map_2d[i][j + 1]);
 			RW_DVA(window, tmp, NULL);
@@ -37,5 +38,5 @@ void	draw_2d_map(sfRenderWindow *window, sfVector2f **map_2d)
 			RW_DVA(window, tmp, NULL);
 			sfVertexArray_destroy(tmp);
 		}
-	}
+	} */
 }

@@ -11,6 +11,7 @@ sfColor select_color(float **map_3d, int i, int j)
 {
 	int max = 0;
 	int min = 10000;
+	int rand_value = rand() % 8;
 
 	max = (max > map_3d[i][j]) ? max : map_3d[i][j];
 	max = (max > map_3d[i][j + 1]) ? max : map_3d[i][j + 1];
@@ -26,7 +27,7 @@ sfColor select_color(float **map_3d, int i, int j)
 	} else if (max - min >= 1 && max - min <= 3) {
 		return (sfColor_fromRGB(143, 89, 34));
 	} else {
-		return (sfColor_fromRGB(153, 153, 153));
+		return (sfColor_fromRGB(153 + rand_value, 153+ rand_value, 153+ rand_value));
 	}
 }
 
@@ -40,16 +41,16 @@ void	draw_vertex_array(sfRenderWindow *window, sfVector2f **map_2d, int i, int j
 		sfVertexArray_destroy(tmp);
 	}
 	//DECOMMENT TO DISPLAY LINES
-	// if (j + 1 <= MAP_Y - 1) {
-	// 	tmp = create_line(&map_2d[i][j], &map_2d[i][j + 1]);
-	// 	RW_DVA(window, tmp, NULL);
-	// 	sfVertexArray_destroy(tmp);
-	// }
-	// if (i + 1 <= MAP_X - 1) {
-	// 	tmp = create_line(&map_2d[i][j], &map_2d[i + 1][j]);
-	// 	RW_DVA(window, tmp, NULL);
-	// 	sfVertexArray_destroy(tmp);
-	// }
+	if (j + 1 <= MAP_Y - 1) {
+		tmp = create_line(&map_2d[i][j], &map_2d[i][j + 1]);
+		RW_DVA(window, tmp, NULL);
+		sfVertexArray_destroy(tmp);
+	}
+	if (i + 1 <= MAP_X - 1) {
+		tmp = create_line(&map_2d[i][j], &map_2d[i + 1][j]);
+		RW_DVA(window, tmp, NULL);
+		sfVertexArray_destroy(tmp);
+	}
 }
 
 void	draw_2d_map(sfRenderWindow *window, map_t *map)

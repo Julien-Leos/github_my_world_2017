@@ -23,8 +23,8 @@
 	#define RW_PE sfRenderWindow_pollEvent
 	#define MAP_X	150
 	#define MAP_Y	150
-	#define SCALING_X 90
-	#define SCALING_Y 90
+	#define SCALING_X 45
+	#define SCALING_Y 45
 	#define SCALING_Z 20
 
 	typedef struct map_s {
@@ -37,6 +37,8 @@
 		int move_x;
 		int move_y;
 		float zoom;
+		int radius;
+		float power;
 		sfCircleShape *mouse_circle;
 	} map_t;
 

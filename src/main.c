@@ -23,6 +23,8 @@ void	init_map(map_t *map)
 	map->move_x = 0;
 	map->move_y = 0;
 	map->zoom = 1;
+	map->radius = 6;
+	map->power = 1;
 	map->mouse_circle = sfCircleShape_create();
 	sfCircleShape_setFillColor(map->mouse_circle, sfRed);
 	sfCircleShape_setRadius(map->mouse_circle, 5);
@@ -92,7 +94,6 @@ void	select_brush(window_t *win, map_t *map)
 {
 
 	sfVector2f circle_pos = {0, 0};
-	int radius = 5;
 
 	map->x_max = -1;
 	map->y_max = -1;
@@ -102,7 +103,7 @@ void	select_brush(window_t *win, map_t *map)
 	if (map->x_max != -1 && map->y_max != -1) {
 		for (int i = 0; i < MAP_X; i++) {
 			for (int j = 0; j < MAP_Y; j++) {
-				if (sqrt(pow(i - map->x_max, 2) + pow(j - map->y_max, 2)) <= radius) {
+				if (sqrt(pow(i - map->x_max, 2) + pow(j - map->y_max, 2)) <= map->radius) {
 					circle_pos.x = map->map_2d[i][j].x - 5;
 					circle_pos.y = map->map_2d[i][j].y - 5;
 					draw_square(win->window, map->mouse_circle, circle_pos);
@@ -175,14 +176,13 @@ void	up_square_brush(map_t *map)
 
 void	up_brush(map_t *map)
 {
-	int radius = 5;
 	float res = 0;
 
 	if (map->x_max != -1 && map->y_max != -1) {
 		for (int i = 0; i < MAP_X; i++) {
 			for (int j = 0; j < MAP_Y; j++) {
-				if ((res = sqrt(pow(i - map->x_max, 2) + pow(j - map->y_max, 2))) <= radius) {
-					map->map_3d[i][j] += 1 * (((res / radius) - 1) * -1);
+				if ((res = sqrt(pow(i - map->x_max, 2) + pow(j - map->y_max, 2))) <= map->radius) {
+					map->map_3d[i][j] += map->power * (((res / map->radius) - 1) * -1);
 				}
 			}
 		}
@@ -357,6 +357,18 @@ void	events(all_t *all, window_t *win, map_t *map)
 			break;
 			case sfKeyL:
 			map->zoom -= 0.01;
+			break;
+			case sfKeyY:
+			map->power += 0.1;
+			break;
+			case sfKeyH:
+			map->power -= 0.1;
+			break;
+			case sfKeyG:
+			map->radius += 1;
+			break;
+			case sfKeyJ:
+			map->radius -= 1;
 			break;
 			default:
 			break;

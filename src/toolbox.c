@@ -98,8 +98,8 @@ int	init_toolbox(all_t *all)
 	sfVector2f position = {125, 0};
 	sfVector2f size = {3, 1080};
 	all->button->rect = sfRectangleShape_create();
-	all->obj[0] = create_object(scale, "./square.png", pos);
-	all->obj[1] = create_object(scale, "./square.png", pos2);
+	all->obj[0] = create_object(scale, "./save.png", pos);
+	all->obj[1] = create_object(scale, "./load.png", pos2);
 	all->obj[2] = create_object(scale, "./square.png", pos3);
 	all->obj[3] = create_object(scale, "./square.png", pos4);
 	all->obj[4] = create_object(scale, "./square.png", pos5);

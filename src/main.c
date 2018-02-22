@@ -142,10 +142,10 @@ void	up_square(map_t *map)
 void	up_square_brush(map_t *map)
 {
 	if (map->x_max != -1 && map->y_max != -1) {
-		map->map_3d[map->x_max][map->y_max] += 0.1;
-		map->map_3d[map->x_max][map->y_max + 1] += 0.1;
-		map->map_3d[map->x_max + 1][map->y_max] += 0.1;
-		map->map_3d[map->x_max + 1][map->y_max + 1] += 0.1;
+		map->map_3d[map->x_max][map->y_max] += 0.3;
+		map->map_3d[map->x_max][map->y_max + 1] += 0.3;
+		map->map_3d[map->x_max + 1][map->y_max] += 0.3;
+		map->map_3d[map->x_max + 1][map->y_max + 1] += 0.3;
 	}
 }
 
@@ -158,7 +158,7 @@ void	up_corner(map_t *map)
 void	up_corner_brush(map_t *map)
 {
 	if (map->x_max != -1 && map->y_max != -1)
-		map->map_3d[map->x_max][map->y_max] += 0.1;
+		map->map_3d[map->x_max][map->y_max] += 0.3;
 }
 
 void	down_square(map_t *map)
@@ -264,9 +264,13 @@ void	events(all_t *all, window_t *win, map_t *map)
 			break;
 			case sfKeyQ:
 			map->rotation -= 1;
+			if (map->rotation <= 0)
+				map->rotation = 360;
 			break;
 			case sfKeyD:
 			map->rotation += 1;
+			if (map->rotation >= 360)
+				map->rotation = 0;
 			break;
 			case sfKeyLeft:
 			map->move_x += 10;
@@ -338,7 +342,7 @@ void	terraforming(window_t *win, map_t *map, obj_t *obj)
 		free (map->map_2d[i]);
 	free (map->map_2d);
 	map->map_2d =  create_2d_map(map->map_3d, map);
-	draw_2d_map(win->window, map->map_2d);
+	draw_2d_map(win->window, map->map_2d, map->rotation);
 	if (obj->num_tool == 0)
 		select_corner(win, map);
 	else if (obj->num_tool == 1)

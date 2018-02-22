@@ -10,7 +10,7 @@
 void	init_obj(obj_t *obj)
 {
 	obj->num_button = 0;
-	obj->num_tool = 0;
+	obj->num_tool = 2;
 	obj->num_brush = 0;
 }
 
@@ -54,15 +54,61 @@ int	is_mouse_on_toolbox(sfVector2i mouse_pos)
 	return (0);
 }
 
-void	which_select_corner(window_t *win, map_t *map, int i, int j)
+float	calc_sqr(sfVector2f A, sfVector2f B, sfVector2i P)
 {
-	if (map->map_2d[i][j].x > win->mouse_pos.x - SCALING_X / 3 &&
-	map->map_2d[i][j].x < win->mouse_pos.x + SCALING_X / 3 &&
-	map->map_2d[i][j].y > win->mouse_pos.y - SCALING_Y / 3 &&
-	map->map_2d[i][j].y < win->mouse_pos.y + SCALING_Y / 3 &&
+	sfVector2f vector_D = {B.x - A.x, B.y - A.y};
+	sfVector2f vector_T = {P.x - A.x, P.y - A.y};
+
+	return ((vector_D.x * vector_T.y) - (vector_D.y * vector_T.x));
+}
+
+void	which_select_square(window_t *win, map_t *map, int i, int j)
+{
+	sfVector2i m_pos = win->mouse_pos;
+
+	if (calc_sqr(map->map_2d[i][j], map->map_2d[i][j + 1], m_pos) > 0 &&
+	calc_sqr(map->map_2d[i][j], map->map_2d[i + 1][j], m_pos) < 0 &&
+	calc_sqr(map->map_2d[i][j + 1], map->map_2d[i + 1][j + 1], m_pos) > 0 &&
+	calc_sqr(map->map_2d[i + 1][j], map->map_2d[i + 1][j + 1], m_pos) < 0 &&
 	is_mouse_on_toolbox(win->mouse_pos) == 0) {
 		map->x_max = (i > map->x_max) ? i : map->x_max;
 		map->y_max = (j > map->y_max) ? j : map->y_max;
+	}
+}
+
+void	which_select_corner(window_t *win, map_t *map, int i, int j)
+{
+	if (map->map_2d[i][j].x > win->mouse_pos.x - (SCALING_X * map->zoom / 3) &&
+	map->map_2d[i][j].x < win->mouse_pos.x + (SCALING_X * map->zoom / 3) &&
+	map->map_2d[i][j].y > win->mouse_pos.y - (SCALING_Y * map->zoom / 3) &&
+	map->map_2d[i][j].y < win->mouse_pos.y + (SCALING_Y * map->zoom / 3) &&
+	is_mouse_on_toolbox(win->mouse_pos) == 0) {
+		map->x_max = (i > map->x_max) ? i : map->x_max;
+		map->y_max = (j > map->y_max) ? j : map->y_max;
+	}
+}
+
+void	select_brush(window_t *win, map_t *map)
+{
+
+	sfVector2f circle_pos = {0, 0};
+	int radius = 5;
+
+	map->x_max = -1;
+	map->y_max = -1;
+	for (int i = 0; i < MAP_X - 1; i++)
+		for (int j = 0; j < MAP_Y - 1; j++)
+			which_select_square(win, map, i, j);
+	if (map->x_max != -1 && map->y_max != -1) {
+		for (int i = 0; i < MAP_X; i++) {
+			for (int j = 0; j < MAP_Y; j++) {
+				if (sqrt(pow(i - map->x_max, 2) + pow(j - map->y_max, 2)) <= radius) {
+					circle_pos.x = map->map_2d[i][j].x - 5;
+					circle_pos.y = map->map_2d[i][j].y - 5;
+					draw_square(win->window, map->mouse_circle, circle_pos);
+				}
+			}
+		}
 	}
 }
 
@@ -82,28 +128,6 @@ void	select_corner(window_t *win, map_t *map)
 	}
 }
 
-float	calc_sqr(sfVector2f A, sfVector2f B, sfVector2i P)
-{
-	sfVector2f vector_D = {B.x - A.x, B.y - A.y};
-	sfVector2f vector_T = {P.x - A.x, P.y - A.y};
-
-	return ((vector_D.x * vector_T.y) - (vector_D.y * vector_T.x));
-}
-
-void	which_select_square(map_t *map, window_t *win, int i, int j)
-{
-	sfVector2i m_pos = win->mouse_pos;
-
-	if (calc_sqr(map->map_2d[i][j], map->map_2d[i][j + 1], m_pos) > 0 &&
-	calc_sqr(map->map_2d[i][j], map->map_2d[i + 1][j], m_pos) < 0 &&
-	calc_sqr(map->map_2d[i][j + 1], map->map_2d[i + 1][j + 1], m_pos) > 0 &&
-	calc_sqr(map->map_2d[i + 1][j], map->map_2d[i + 1][j + 1], m_pos) < 0 &&
-	is_mouse_on_toolbox(win->mouse_pos) == 0) {
-		map->x_max = (i > map->x_max) ? i : map->x_max;
-		map->y_max = (j > map->y_max) ? j : map->y_max;
-	}
-}
-
 void	select_square(window_t *win, map_t *map)
 {
 	sfVector2f circle_pos = {0, 0};
@@ -112,7 +136,7 @@ void	select_square(window_t *win, map_t *map)
 	map->y_max = -1;
 	for (int i = 0; i < MAP_X - 1; i++)
 		for (int j = 0; j < MAP_Y - 1; j++)
-			which_select_square(map, win, i, j);
+			which_select_square(win, map, i, j);
 	if (map->x_max != -1 && map->y_max != -1) {
 		circle_pos.x = map->map_2d[map->x_max][map->y_max].x - 5;
 		circle_pos.y = map->map_2d[map->x_max][map->y_max].y - 5;
@@ -129,15 +153,15 @@ void	select_square(window_t *win, map_t *map)
 	}
 }
 
-void	up_square(map_t *map)
-{
-	if (map->x_max != -1 && map->y_max != -1) {
-		map->map_3d[map->x_max][map->y_max] += 0.5;
-		map->map_3d[map->x_max][map->y_max + 1] += 0.5;
-		map->map_3d[map->x_max + 1][map->y_max] += 0.5;
-		map->map_3d[map->x_max + 1][map->y_max + 1] += 0.5;
-	}
-}
+// void	up_square(map_t *map)
+// {
+// 	if (map->x_max != -1 && map->y_max != -1) {
+// 		map->map_3d[map->x_max][map->y_max] += 1;
+// 		map->map_3d[map->x_max][map->y_max + 1] += 1;
+// 		map->map_3d[map->x_max + 1][map->y_max] += 1;
+// 		map->map_3d[map->x_max + 1][map->y_max + 1] += 1;
+// 	}
+// }
 
 void	up_square_brush(map_t *map)
 {
@@ -149,11 +173,27 @@ void	up_square_brush(map_t *map)
 	}
 }
 
-void	up_corner(map_t *map)
+void	up_brush(map_t *map)
 {
-	if (map->x_max != -1 && map->y_max != -1)
-		map->map_3d[map->x_max][map->y_max] += 0.5;
+	int radius = 5;
+	float res = 0;
+
+	if (map->x_max != -1 && map->y_max != -1) {
+		for (int i = 0; i < MAP_X; i++) {
+			for (int j = 0; j < MAP_Y; j++) {
+				if ((res = sqrt(pow(i - map->x_max, 2) + pow(j - map->y_max, 2))) <= radius) {
+					map->map_3d[i][j] += 1 * (((res / radius) - 1) * -1);
+				}
+			}
+		}
+	}
 }
+
+// void	up_corner(map_t *map)
+// {
+// 	if (map->x_max != -1 && map->y_max != -1)
+// 		map->map_3d[map->x_max][map->y_max] += 0.5;
+// }
 
 void	up_corner_brush(map_t *map)
 {
@@ -161,7 +201,17 @@ void	up_corner_brush(map_t *map)
 		map->map_3d[map->x_max][map->y_max] += 0.3;
 }
 
-void	down_square(map_t *map)
+// void	down_square(map_t *map)
+// {
+// 	if (map->x_max != -1 && map->y_max != -1) {
+// 		map->map_3d[map->x_max][map->y_max] -= 0.5;
+// 		map->map_3d[map->x_max][map->y_max + 1] -= 0.5;
+// 		map->map_3d[map->x_max + 1][map->y_max] -= 0.5;
+// 		map->map_3d[map->x_max + 1][map->y_max + 1] -= 0.5;
+// 	}
+// }
+
+void	down_square_brush(map_t *map)
 {
 	if (map->x_max != -1 && map->y_max != -1) {
 		map->map_3d[map->x_max][map->y_max] -= 0.5;
@@ -171,10 +221,16 @@ void	down_square(map_t *map)
 	}
 }
 
-void	down_corner(map_t *map)
+// void	down_corner(map_t *map)
+// {
+// 	if (map->x_max != -1)
+// 		map->map_3d[map->x_max][map->y_max] -= 0.5;
+// }
+
+void	down_corner_brush(map_t *map)
 {
-	if (map->x_max != -1)
-		map->map_3d[map->x_max][map->y_max] -= 0.5;
+	if (map->x_max != -1 && map->y_max != -1)
+		map->map_3d[map->x_max][map->y_max] += 0.3;
 }
 
 void	up_tool_brush(map_t *map, obj_t *obj)
@@ -183,28 +239,38 @@ void	up_tool_brush(map_t *map, obj_t *obj)
 		up_corner_brush(map);
 	else if (obj->num_tool == 1)
 		up_square_brush(map);
+	else if (obj->num_tool == 2)
+		up_brush(map);
 }
 
-void	up_tool(map_t *map, obj_t *obj)
-{
-	if (obj->num_tool == 0)
-		up_corner(map);
-	else if (obj->num_tool == 1)
-		up_square(map);
-}
+// void	up_tool(map_t *map, obj_t *obj)
+// {
+// 	if (obj->num_tool == 0)
+// 		up_corner(map);
+// 	else if (obj->num_tool == 1)
+// 		up_square(map);
+// }
+//
+// void	down_tool(map_t *map, obj_t *obj)
+// {
+// 	if (obj->num_tool == 0)
+// 		down_corner(map);
+// 	else if (obj->num_tool == 1)
+// 		down_square(map);
+// }
 
-void	down_tool(map_t *map, obj_t *obj)
+void	down_tool_brush(map_t *map, obj_t *obj)
 {
 	if (obj->num_tool == 0)
-		down_corner(map);
+		down_corner_brush(map);
 	else if (obj->num_tool == 1)
-		down_square(map);
+		down_square_brush(map);
 }
 
 void	change_tool(obj_t *obj)
 {
 	obj->num_tool += 1;
-	if (obj->num_tool > 1)
+	if (obj->num_tool > 2)
 		obj->num_tool = 0;
 }
 
@@ -220,16 +286,16 @@ void	events(all_t *all, window_t *win, map_t *map)
 	if (win->event.type == sfEvtClosed)
 		sfRenderWindow_close(win->window);
 	if (win->event.type == sfEvtMouseButtonPressed) {
-		switch (win->event.mouseButton.button) {
-			case sfMouseLeft:
-			up_tool(map, all->obj);
-			break;
-			case sfMouseRight:
-			down_tool(map, all->obj);
-			break;
-			default:
-			break;
-		}
+		// switch (win->event.mouseButton.button) {
+		// 	case sfMouseLeft:
+		// 	up_tool(map, all->obj);
+		// 	break;
+		// 	case sfMouseRight:
+		// 	down_tool(map, all->obj);
+		// 	break;
+		// 	default:
+		// 	break;
+		// }
 		switch (all->obj->num_button) {
 			case 0:
 			save(all);
@@ -247,6 +313,8 @@ void	events(all_t *all, window_t *win, map_t *map)
 	}
 	if (sfMouse_isButtonPressed(sfMouseLeft) && all->obj->num_brush == 1) {
 		up_tool_brush(map, all->obj);
+	} else if (sfMouse_isButtonPressed(sfMouseRight) && all->obj->num_brush == 1) {
+		down_tool_brush(map, all->obj);
 	}
 	if (win->event.type ==  sfEvtMouseWheelScrolled) {
 		if (win->event.mouseWheelScroll.delta == 1 && map->zoom < 3)
@@ -342,11 +410,13 @@ void	terraforming(window_t *win, map_t *map, obj_t *obj)
 		free (map->map_2d[i]);
 	free (map->map_2d);
 	map->map_2d =  create_2d_map(map->map_3d, map);
-	draw_2d_map(win->window, map->map_2d, map->rotation);
+	draw_2d_map(win->window, map);
 	if (obj->num_tool == 0)
 		select_corner(win, map);
 	else if (obj->num_tool == 1)
 		select_square(win, map);
+	else if (obj->num_tool == 2)
+		select_brush(win, map);
 }
 
 void	init_window(window_t *win)

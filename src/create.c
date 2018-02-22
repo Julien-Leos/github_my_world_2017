@@ -20,13 +20,13 @@ sfVertexArray *create_line(sfVector2f *point1, sfVector2f *point2)
 }
 
 sfVertexArray *create_quads(sfVector2f *point1, sfVector2f *point2,
-	sfVector2f *point3, sfVector2f *point4)
+	sfVector2f *point3, sfVector2f *point4, sfColor color)
 {
 	sfVertexArray *vertex_array = sfVertexArray_create();
-	sfVertex vertex1 = {.position = *point1, .color = sfWhite, .texCoords = (sfVector2f){0, 0}};
-	sfVertex vertex2 = {.position = *point2, .color = sfWhite, .texCoords = (sfVector2f){0, SCALING_Y}};
-	sfVertex vertex3 = {.position = *point3, .color = sfWhite, .texCoords = (sfVector2f){SCALING_X, SCALING_Y}};
-	sfVertex vertex4 = {.position = *point4, .color = sfWhite, .texCoords = (sfVector2f){SCALING_X, 0}};
+	sfVertex vertex1 = {.position = *point1, .color = color, .texCoords = (sfVector2f){0, 0}};
+	sfVertex vertex2 = {.position = *point2, .color = color, .texCoords = (sfVector2f){0, SCALING_Y}};
+	sfVertex vertex3 = {.position = *point3, .color = color, .texCoords = (sfVector2f){SCALING_X, SCALING_Y}};
+	sfVertex vertex4 = {.position = *point4, .color = color, .texCoords = (sfVector2f){SCALING_X, 0}};
 
 	sfVertexArray_append(vertex_array, vertex1);
 	sfVertexArray_append(vertex_array, vertex2);

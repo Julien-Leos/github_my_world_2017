@@ -7,11 +7,21 @@
 
 #include "main.h"
 
-char *my_itoa(int nb)
+int my_putstrfd(int fd, char *str)
+{
+	int i = 0;
+	while (str[i] != '\0') {
+		write(fd, &str[i], 1);
+		i++;
+	}
+	return (0);
+}
+
+char	*my_itoa(float nb)
 {
 	int len = 0;
 	char *str;
-	int tmp = nb;
+	float tmp = nb;
 
 	while (tmp > 0) {
 		tmp /= 10;
@@ -20,7 +30,7 @@ char *my_itoa(int nb)
 	str = malloc(sizeof(*str) * (len + 1));
 	str[len] = '\0';
 	while (len--) {
-		str[len] = nb % 10  + '0';
+		str[len] = (int)nb % 10  + '0';
 		nb /= 10;
 	}
 	return (str);
@@ -47,7 +57,7 @@ int save(all_t *all)
 	fd = open("save.txt", O_WRONLY);
 	for (int i = 0; i < MAP_X; i++) {
 		for (int j = 0; j < MAP_Y - 1 ; j++) {
-			write(fd, my_itoa(all->map->map_3d[i][j]), 2);
+			my_putstrfd(fd, my_itoa(all->map->map_3d[i][j]));
 			write(fd, "\n", 1);
 		}
 	}
@@ -88,8 +98,8 @@ int	init_toolbox(all_t *all)
 	sfVector2f position = {125, 0};
 	sfVector2f size = {3, 1080};
 	all->button->rect = sfRectangleShape_create();
-	all->obj[0] = create_object(scale, "./square.png", pos);
-	all->obj[1] = create_object(scale, "./square.png", pos2);
+	all->obj[0] = create_object(scale, "./save.png", pos);
+	all->obj[1] = create_object(scale, "./load.png", pos2);
 	all->obj[2] = create_object(scale, "./square.png", pos3);
 	all->obj[3] = create_object(scale, "./square.png", pos4);
 	all->obj[4] = create_object(scale, "./square.png", pos5);

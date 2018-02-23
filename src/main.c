@@ -217,9 +217,19 @@ void	change_brush(obj_t *obj)
 
 void	events(all_t *all, window_t *win, map_t *map)
 {
+	static int box = 0;
+	sfVector2i mouse = {0, 0};
+
 	if (win->event.type == sfEvtClosed)
 		sfRenderWindow_close(win->window);
+	if (win->event.type == sfEvtTextEntered && box == 1) {
+		if (win->event.text.unicode == 13)
+			box = 0;
+	}
 	if (win->event.type == sfEvtMouseButtonPressed) {
+		mouse = sfMouse_getPositionRenderWindow(win->window);
+		if (mouse.x > 1400 && mouse.x < 1850 && mouse.y > 10 && mouse.y < 80)
+			box = 1;
 		switch (win->event.mouseButton.button) {
 			case sfMouseLeft:
 			up_tool(map, all->obj);
@@ -254,7 +264,7 @@ void	events(all_t *all, window_t *win, map_t *map)
 		if (win->event.mouseWheelScroll.delta == -1 && map->zoom > 0.1)
 			map->zoom -= 0.01;
 	}
-	if (win->event.type == sfEvtKeyPressed) {
+	if (win->event.type == sfEvtKeyPressed && box == 0) {
 		switch(win->event.key.code) {
 			case sfKeyZ:
 			map->inclinaison -= 1;
@@ -334,6 +344,11 @@ void	draw_toolbox(window_t *win, obj_t *obj, button_t *button)
 	for (int i = 0; i != 8; i++)
 		sfRenderWindow_drawSprite(win->window, obj[i].sprite, NULL);
 	sfRenderWindow_drawRectangleShape(win->window, button->rect, NULL);
+	sfRenderWindow_drawRectangleShape(win->window, button->text_one, NULL);
+	sfRenderWindow_drawRectangleShape(win->window, button->text_two, NULL);
+	sfRenderWindow_drawRectangleShape(win->window, button->text_three, NULL);
+	sfRenderWindow_drawRectangleShape(win->window, button->text_four, NULL);
+
 }
 
 void	terraforming(window_t *win, map_t *map, obj_t *obj)

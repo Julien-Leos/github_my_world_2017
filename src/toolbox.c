@@ -98,10 +98,15 @@ int	init_toolbox(all_t *all)
 	sfVector2f position = {125, 0};
 	sfVector2f size = {3, 1080};
 	all->button->rect = sfRectangleShape_create();
+	all->button->text_one = sfRectangleShape_create();
+	all->button->text_two = sfRectangleShape_create();
+	all->button->text_three = sfRectangleShape_create();
+	all->button->text_four = sfRectangleShape_create();
+
 	all->obj[0] = create_object(scale, "./save.png", pos);
 	all->obj[1] = create_object(scale, "./load.png", pos2);
-	all->obj[2] = create_object(scale, "./square.png", pos3);
-	all->obj[3] = create_object(scale, "./square.png", pos4);
+	all->obj[2] = create_object(scale, "./more.png", pos3);
+	all->obj[3] = create_object(scale, "./fast.png", pos4);
 	all->obj[4] = create_object(scale, "./square.png", pos5);
 	all->obj[5] = create_object(scale, "./square.png", pos6);
 	all->obj[6] = create_object(scale, "./square.png", pos7);
@@ -110,5 +115,22 @@ int	init_toolbox(all_t *all)
 	sfRectangleShape_setSize(all->button->rect, size);
 	sfRectangleShape_setPosition(all->button->rect, position);
 	sfRectangleShape_setFillColor(all->button->rect, sfWhite);
+
+	sfRectangleShape_setSize(all->button->text_one, (sfVector2f){3, 70});
+	sfRectangleShape_setPosition(all->button->text_one,(sfVector2f){1400, 10});
+	sfRectangleShape_setFillColor(all->button->text_one, sfWhite);
+
+	sfRectangleShape_setSize(all->button->text_two, (sfVector2f){3, 70});
+	sfRectangleShape_setPosition(all->button->text_two, (sfVector2f){1800, 10});
+	sfRectangleShape_setFillColor(all->button->text_two, sfWhite);
+
+	sfRectangleShape_setSize(all->button->text_three, (sfVector2f){400, 3});
+	sfRectangleShape_setPosition(all->button->text_three, (sfVector2f){1400, 10});
+	sfRectangleShape_setFillColor(all->button->text_three, sfWhite);
+
+	sfRectangleShape_setSize(all->button->text_four, (sfVector2f){403, 3});
+	sfRectangleShape_setPosition(all->button->text_four, (sfVector2f){1400, 80});
+	sfRectangleShape_setFillColor(all->button->text_four, sfWhite);
+
 	return (0);
 }

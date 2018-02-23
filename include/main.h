@@ -21,8 +21,8 @@
 
 	#define RW_DVA	sfRenderWindow_drawVertexArray
 	#define RW_PE sfRenderWindow_pollEvent
-	#define MAP_X	10
-	#define MAP_Y	10
+	#define MAP_X	50
+	#define MAP_Y	50
 	#define SCALING_X 90
 	#define SCALING_Y 90
 	#define SCALING_Z 20
@@ -51,6 +51,10 @@
 
 	typedef struct button_s {
 		sfRectangleShape *rect;
+		sfRectangleShape *text_one;
+		sfRectangleShape *text_two;
+		sfRectangleShape *text_three;
+		sfRectangleShape *text_four;
 	}button_t;
 
 	typedef struct window_s {

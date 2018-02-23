@@ -21,10 +21,10 @@
 
 	#define RW_DVA	sfRenderWindow_drawVertexArray
 	#define RW_PE sfRenderWindow_pollEvent
-	#define MAP_X	50
-	#define MAP_Y	50
-	#define SCALING_X 90
-	#define SCALING_Y 90
+	#define MAP_X	150
+	#define MAP_Y	150
+	#define SCALING_X 45
+	#define SCALING_Y 45
 	#define SCALING_Z 20
 
 	typedef struct map_s {
@@ -32,11 +32,15 @@
 		float **map_3d;
 		double inclinaison;
 		double rotation;
+		int map_x;
+		int map_y;
 		int x_max;
 		int y_max;
 		int move_x;
 		int move_y;
 		float zoom;
+		int radius;
+		float power;
 		sfCircleShape *mouse_circle;
 	} map_t;
 
@@ -61,6 +65,9 @@
 		sfRenderWindow *window;
 		sfEvent event;
 		sfVector2i mouse_pos;
+		char *input;
+		sfText *textbox;
+		sfFont *font;
 	} window_t;
 
 	typedef struct all_s {
@@ -70,9 +77,9 @@
 		window_t *win;
 	} all_t;
 
-	void draw_2d_map(sfRenderWindow *, sfVector2f **, int);
+	void draw_2d_map(sfRenderWindow *, map_t*);
 	sfVertexArray *create_line(sfVector2f *, sfVector2f *);
-	sfVertexArray *create_quads(sfVector2f *, sfVector2f *, sfVector2f *, sfVector2f *);
+	sfVertexArray *create_quads(sfVector2f *, sfVector2f *, sfVector2f *, sfVector2f *, sfColor);
 	sfVector2f project_iso_point(int, int, int, map_t *);
 	sfVector2f **create_2d_map(float **, map_t *);
 	float **create_3d_map();

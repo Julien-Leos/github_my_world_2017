@@ -41,8 +41,8 @@ int load(all_t *all)
 	int fd = open("save.txt", O_RDONLY);
 	if (fd == -1)
 		return -1;
-	for (int i = 0; i < MAP_X; i++) {
-		for (int j = 0; j < MAP_Y - 1 ; j++)
+	for (int i = 0; i < all->map->map_x; i++) {
+		for (int j = 0; j < all->map->map_y - 1 ; j++)
 			all->map->map_3d[i][j] = my_getnbr(get_next_line(fd));
 	}
 	return (0);
@@ -55,8 +55,8 @@ int save(all_t *all)
 		return -1;
 	close(fd);
 	fd = open("save.txt", O_WRONLY);
-	for (int i = 0; i < MAP_X; i++) {
-		for (int j = 0; j < MAP_Y - 1 ; j++) {
+	for (int i = 0; i < all->map->map_x; i++) {
+		for (int j = 0; j < all->map->map_y - 1 ; j++) {
 			my_putstrfd(fd, my_itoa(all->map->map_3d[i][j]));
 			write(fd, "\n", 1);
 		}

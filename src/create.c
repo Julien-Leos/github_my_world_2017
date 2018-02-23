@@ -20,13 +20,13 @@ sfVertexArray *create_line(sfVector2f *point1, sfVector2f *point2)
 }
 
 sfVertexArray *create_quads(sfVector2f *point1, sfVector2f *point2,
-	sfVector2f *point3, sfVector2f *point4)
+	sfVector2f *point3, sfVector2f *point4, sfColor color)
 {
 	sfVertexArray *vertex_array = sfVertexArray_create();
-	sfVertex vertex1 = {.position = *point1, .color = sfWhite, .texCoords = (sfVector2f){0, 0}};
-	sfVertex vertex2 = {.position = *point2, .color = sfWhite, .texCoords = (sfVector2f){0, SCALING_Y}};
-	sfVertex vertex3 = {.position = *point3, .color = sfWhite, .texCoords = (sfVector2f){SCALING_X, SCALING_Y}};
-	sfVertex vertex4 = {.position = *point4, .color = sfWhite, .texCoords = (sfVector2f){SCALING_X, 0}};
+	sfVertex vertex1 = {.position = *point1, .color = color, .texCoords = (sfVector2f){0, 0}};
+	sfVertex vertex2 = {.position = *point2, .color = color, .texCoords = (sfVector2f){0, SCALING_Y}};
+	sfVertex vertex3 = {.position = *point3, .color = color, .texCoords = (sfVector2f){SCALING_X, SCALING_Y}};
+	sfVertex vertex4 = {.position = *point4, .color = color, .texCoords = (sfVector2f){SCALING_X, 0}};
 
 	sfVertexArray_append(vertex_array, vertex1);
 	sfVertexArray_append(vertex_array, vertex2);
@@ -44,12 +44,12 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 	int x_origine = 0;
 	int y_origine = 0;
 
-	if (MAP_X % 2 == 0) {
-		x_origine = ((SCALING_X * map->zoom * (MAP_X - 1)) / 2) + map->move_x;
-		y_origine = ((SCALING_Y * map->zoom * (MAP_Y - 1)) / 2) + map->move_y;
+	if (map->map_x % 2 == 0) {
+		x_origine = ((SCALING_X * map->zoom * (map->map_x - 1)) / 2) + map->move_x;
+		y_origine = ((SCALING_Y * map->zoom * (map->map_y - 1)) / 2) + map->move_y;
 	} else {
-		x_origine = ((SCALING_X * map->zoom * MAP_X) / 2) + map->move_x;
-		y_origine = ((SCALING_Y * map->zoom * MAP_Y) / 2) + map->move_y;
+		x_origine = ((SCALING_X * map->zoom * map->map_x) / 2) + map->move_x;
+		y_origine = ((SCALING_Y * map->zoom * map->map_y) / 2) + map->move_y;
 	}
 	vec.x = (x - x_origine) * cos (rotation) + (y - y_origine) * sin (rotation) + x_origine;
 	vec.y = - (x - x_origine) * sin (rotation) + (y - y_origine) * cos (rotation) + y_origine;
@@ -59,13 +59,13 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 	return(vec);
 }
 
-float	**create_3d_map()
+float	**create_3d_map(map_t *map)
 {
-	float **map_3d = malloc(sizeof(int *) * MAP_X);
+	float **map_3d = malloc(sizeof(int *) * map->map_x);
 
-	for (int i = 0; i < MAP_X; i++) {
-		map_3d[i] = malloc(sizeof(int) * MAP_Y);
-		for (int j = 0; j < MAP_Y; j++)
+	for (int i = 0; i < map->map_x; i++) {
+		map_3d[i] = malloc(sizeof(int) * map->map_y);
+		for (int j = 0; j < map->map_y; j++)
 			map_3d[i][j] = 0;
 	}
 	return (map_3d);
@@ -73,11 +73,11 @@ float	**create_3d_map()
 
 sfVector2f **create_2d_map(float **map_3d, map_t *map)
 {
-	sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * (MAP_X));
+	sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * (map->map_x));
 
-	for (int j = 0; j < MAP_X; j++) {
-		map_2d[j] = malloc(sizeof(sfVector2f) * MAP_Y);
-		for (int i = 0; i < MAP_Y; i++) {
+	for (int j = 0; j < map->map_x; j++) {
+		map_2d[j] = malloc(sizeof(sfVector2f) * map->map_y);
+		for (int i = 0; i < map->map_y; i++) {
 			map_2d[j][i] = project_iso_point(i * SCALING_X * map->zoom,
 				j * SCALING_Y * map->zoom, map_3d[j][i] * SCALING_Z *map->zoom, map);
 		}

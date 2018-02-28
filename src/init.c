@@ -29,6 +29,7 @@ void	init_map(map_t *map)
 	map->radius = 6;
 	map->power = 1;
 	map->mouse_circle = sfCircleShape_create();
+	map->brush_altitude = -1;
 	sfCircleShape_setFillColor(map->mouse_circle, sfRed);
 	sfCircleShape_setRadius(map->mouse_circle, 5);
 }
@@ -44,6 +45,7 @@ void	init_window(window_t *win)
 
 void	init_all(all_t *all)
 {
+	lol = 1;
 	all->map = malloc(sizeof(*all->map));
 	all->button = malloc(sizeof(*all->button));
 	all->win = malloc(sizeof(*all->win));

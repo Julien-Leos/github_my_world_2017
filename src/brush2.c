@@ -40,6 +40,28 @@ void	up_square_brush(map_t *map)
 	}
 }
 
+void	up_brush_nivelling(map_t *map)
+{
+	float res = 0;
+
+	if (map->x_max != -1 && map->y_max != -1) {
+		if (map->brush_altitude == -1)
+			map->brush_altitude = map->map_3d[map->x_max][map->y_max];
+		for (int i = 0; i < map->map_x; i++) {
+			for (int j = 0; j < map->map_y; j++) {
+				if ((res = sqrt(pow(i - map->x_max, 2) + pow(j - map->y_max, 2))) <= map->radius) {
+					if (map->map_3d[i][j] - map->brush_altitude <= 0.5 && map->map_3d[i][j] - map->brush_altitude >= -0.5)
+						map->map_3d[i][j] = map->brush_altitude;
+					else if (map->map_3d[i][j] < map->brush_altitude)
+						map->map_3d[i][j] += map->power * (((res / map->radius) - 1) * -1);
+					else if (map->map_3d[i][j] > map->brush_altitude)
+						map->map_3d[i][j] -= map->power * (((res / map->radius) - 1) * -1);
+				}
+			}
+		}
+	}
+}
+
 void	up_brush(map_t *map)
 {
 	float res = 0;

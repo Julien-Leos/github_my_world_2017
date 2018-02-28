@@ -23,6 +23,8 @@ void event_brush(all_t *all, map_t *map)
 		up_tool_brush(map, all->obj);
 	} else if (sfMouse_isButtonPressed(sfMouseRight) && all->obj->num_brush == 1) {
 		down_tool_brush(map, all->obj);
+	} else {
+		map->brush_altitude = -1;
 	}
 }
 

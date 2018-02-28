@@ -42,16 +42,18 @@ void	draw_vertex_array(sfRenderWindow *window, sfVector2f **map_2d, int i, int j
 		sfVertexArray_destroy(tmp);
 	}
 	//DECOMMENT TO DISPLAY LINES
-	// if (j + 1 <= map->map_y - 1) {
-	// 	tmp = create_line(&map_2d[i][j], &map_2d[i][j + 1]);
-	// 	RW_DVA(window, tmp, NULL);
-	// 	sfVertexArray_destroy(tmp);
-	// }
-	// if (i + 1 <= map->map_x - 1) {
-	// 	tmp = create_line(&map_2d[i][j], &map_2d[i + 1][j]);
-	// 	RW_DVA(window, tmp, NULL);
-	// 	sfVertexArray_destroy(tmp);
-	// }
+	if (lol == 1) {
+		if (j + 1 <= map->map_y - 1) {
+			tmp = create_line(&map_2d[i][j], &map_2d[i][j + 1]);
+			RW_DVA(window, tmp, NULL);
+			sfVertexArray_destroy(tmp);
+		}
+		if (i + 1 <= map->map_x - 1) {
+			tmp = create_line(&map_2d[i][j], &map_2d[i + 1][j]);
+			RW_DVA(window, tmp, NULL);
+			sfVertexArray_destroy(tmp);
+		}
+	}
 }
 
 void	draw_2d_map(sfRenderWindow *window, map_t *map)

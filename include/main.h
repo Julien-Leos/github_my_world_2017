@@ -41,7 +41,8 @@
 		float zoom;
 		int radius;
 		float power;
-		int leveling;
+		float leveling;
+		float brush_altitude;
 		sfCircleShape *mouse_circle;
 	} map_t;
 
@@ -78,11 +79,16 @@
 		window_t *win;
 	} all_t;
 
+	int lol;
+
 	void initBruit2D(int longueur, int hauteur, int pas, int octaves);
 	double bruit_coherent2D(double x, double y, double persistance);
 	void destroyBruit2D();
 
+	void	up_brush_nivelling(map_t *map);
 	float Get2DPerlinNoiseValue(float, float);
+	float PerlinNoise_2D(float x, float y);
+	float InterpolatedNoise_1(float x, float y);
 	void draw_2d_map(sfRenderWindow *, map_t*);
 	sfVertexArray *create_line(sfVector2f *, sfVector2f *);
 	sfVertexArray *create_quads(sfVector2f *, sfVector2f *, sfVector2f *, sfVector2f *, sfColor);

@@ -434,13 +434,12 @@ void	terraforming(window_t *win, map_t *map, obj_t *obj)
 	for (int i = 0; i < map->map_x; i++)
 		free (map->map_2d[i]);
 	free (map->map_2d);
-	// modify_3d_map(map);
 	map->map_2d =  create_2d_map(map->map_3d, map);
 	draw_2d_map(win->window, map);
 	if (obj->num_tool == 0)
 		select_corner(win, map);
 	else if (obj->num_tool == 1)
-		select_square(win, map);
+		select_brush(win, map);
 	else if (obj->num_tool == 2)
 		select_brush(win, map);
 }
@@ -449,7 +448,6 @@ int	main()
 {
 	all_t *all = malloc(sizeof(*all));
 	init_all(all);
-	// initBruit2D(SCALING_X, SCALING_Y, 64, 3);
 	while (sfRenderWindow_isOpen(all->win->window)) {
 		which_button(all->win, all->obj);
 		while (RW_PE(all->win->window, &(all->win->event)))
@@ -459,6 +457,5 @@ int	main()
 		draw_window(all->win);
 	}
 	my_free(all);
-	// destroyBruit2D();
 	return (0);
 }

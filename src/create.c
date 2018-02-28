@@ -59,25 +59,12 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 	return(vec);
 }
 
-// <<<<<<< HEAD
-// float	**create_3d_map(int leveling)
-// {
-// 	float **map_3d = malloc(sizeof(float *) * MAP_X);
-//
-// 	for (int i = 0; i < MAP_X; i++) {
-// 		map_3d[i] = malloc(sizeof(float) * MAP_Y);
-// 		for (int j = 0; j < MAP_Y; j++) {
-// 			// map_3d[i][j] = Get2DPerlinNoiseValue(i + 0.5, j + 0.5, SCALING_X, SCALING_Y) * leveling;
-// 			// map_3d[i][j] = bruit_coherent2D(i, j, 0.5) * leveling;
-// 			// printf("%f\n", bruit_coherent2D(i, j, 0.5) * leveling);
-// 		}
-// =======
 float	**create_3d_map(map_t *map)
 {
 	float **map_3d = malloc(sizeof(int *) * map->map_x);
-	int octave = 3;
+	int octave = 4;
 	float persistance = 0.57;
-	float lacunarity = 1.7;
+	float lacunarity = 1.72;
 	float amplitude = 0;
 	float frequency = 0;
 	float noise_height = 0;
@@ -88,23 +75,23 @@ float	**create_3d_map(map_t *map)
 	for (int i = 0; i < map->map_x; i++) {
 		map_3d[i] = malloc(sizeof(int) * map->map_y);
 		for (int j = 0; j < map->map_y; j++) {
-			amplitude = 1;
-			frequency = 1;
-			noise_height = 0;
-			for (int i = 0; i < octave; i++) {
-				sample_x = i / SCALING_X * frequency;
-				sample_y = j / SCALING_Y * frequency;
-
-				perlin_value = Get2DPerlinNoiseValue(sample_x, sample_y);
-				noise_height += perlin_value * amplitude;
-
-				amplitude *= persistance;
-				frequency *= lacunarity;
-			}
-			map_3d[i][j] = perlin_value;
-			printf("%f\n", map_3d[i][j]);
+			map_3d[i][j] = 0;
+			// amplitude = 1;
+			// frequency = 1;
+			// noise_height = 0;
+			// for (int e = 0; e < octave; e++) {
+			// 	sample_x = (i + 0.5) / SCALING_X;
+			// 	sample_y = (j + 0.5) / SCALING_Y;
+			//
+			// 	perlin_value = Get2DPerlinNoiseValue(sample_x, sample_y);
+			// 	noise_height += perlin_value * amplitude;
+			//
+			// 	amplitude *= persistance;
+			// 	frequency *= lacunarity;
+			// }
+			// map_3d[i][j] = noise_height * 50;
+			// printf("%f\n", map_3d[i][j]);
 		}
-// >>>>>>> 8065cec15760d478cc1b10699b396a9ae08f53f0
 	}
 	return (map_3d);
 }

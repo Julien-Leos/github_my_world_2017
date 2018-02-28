@@ -34,7 +34,7 @@ void	up_tool_brush(map_t *map, obj_t *obj)
 	if (obj->num_tool == 0)
 		up_corner_brush(map);
 	else if (obj->num_tool == 1)
-		up_square_brush(map);
+		up_brush_nivelling(map);
 	else if (obj->num_tool == 2)
 		up_brush(map);
 }

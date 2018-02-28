@@ -32,6 +32,8 @@
 		float **map_3d;
 		double inclinaison;
 		double rotation;
+		int map_x;
+		int map_y;
 		int x_max;
 		int y_max;
 		int move_x;
@@ -54,12 +56,19 @@
 
 	typedef struct button_s {
 		sfRectangleShape *rect;
+		sfRectangleShape *text_one;
+		sfRectangleShape *text_two;
+		sfRectangleShape *text_three;
+		sfRectangleShape *text_four;
 	}button_t;
 
 	typedef struct window_s {
 		sfRenderWindow *window;
 		sfEvent event;
 		sfVector2i mouse_pos;
+		char *input;
+		sfText *textbox;
+		sfFont *font;
 	} window_t;
 
 	typedef struct all_s {
@@ -88,5 +97,39 @@
 	char *get_next_line(int);
 	int my_getnbr(char *);
 	int load(all_t *);
-
+	void draw_square(sfRenderWindow *win, sfCircleShape *circle, sfVector2f pos);
+	void	which_select_square(window_t *win, map_t *map, int i, int j);
+	void	select_square(window_t *win, map_t *map);
+	void	init_obj(obj_t *obj);
+	void	init_map(map_t *map);
+	void	init_window(window_t *win);
+	void	init_all(all_t *all);
+	void events(all_t *all, window_t *win, map_t *map);
+	void event_scrolled(window_t *win, map_t *map);
+	void event_brush(all_t *all, map_t *map);
+	void event_button(all_t *all, window_t *win, int *box);
+	int	is_mouse_on_toolbox(sfVector2i mouse_pos);
+	float	calc_sqr(sfVector2f A, sfVector2f B, sfVector2i P);
+	void	which_select_corner(window_t *win, map_t *map, int i, int j);
+	void	select_brush(window_t *win, map_t *map);
+	void	select_corner(window_t *win, map_t *map);
+	void	up_square_brush(map_t *map);
+	void	up_brush(map_t *map);
+	void	up_corner_brush(map_t *map);
+	void	down_square_brush(map_t *map);
+	void	down_corner_brush(map_t *map);
+	void	up_tool_brush(map_t *map, obj_t *obj);
+	void	down_tool_brush(map_t *map, obj_t *obj);
+	void	change_tool(obj_t *obj);
+	void	change_brush(obj_t *obj);
+	int my_power(int nb, int power);
+	void textbox(window_t *win, map_t *map, int *box);
+	void	my_free(all_t *all);
+	void	which_button(window_t *win, obj_t *obj);
+	void	draw_toolbox(window_t *win, obj_t *obj, button_t *button);
+	void	terraforming(window_t *win, map_t *map, obj_t *obj);
+	void	draw_window(window_t *win);
+	void event_keys(window_t *win, map_t *map, int *box);
+	sfRenderWindow *my_window_create(void);
+	int my_putstrfd(int fd, char *str);
 #endif

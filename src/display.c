@@ -31,22 +31,22 @@ sfColor select_color(float **map_3d, int i, int j)
 	}
 }
 
-void	draw_vertex_array(sfRenderWindow *window, sfVector2f **map_2d, int i, int j, float **map_3d)
+void	draw_vertex_array(sfRenderWindow *window, sfVector2f **map_2d, int i, int j, float **map_3d, map_t *map)
 {
 	sfVertexArray *tmp = NULL;
 
-	if (i < MAP_X - 1 && j < MAP_Y - 1) {
+	if (i < map->map_x - 1 && j < map->map_y - 1) {
 		tmp = create_quads(&map_2d[i][j], &map_2d[i][j + 1], &map_2d[i + 1][j + 1], &map_2d[i + 1][j], select_color(map_3d, i, j));
 		RW_DVA(window, tmp, NULL);
 		sfVertexArray_destroy(tmp);
 	}
 	//DECOMMENT TO DISPLAY LINES
-	if (j + 1 <= MAP_Y - 1) {
+	if (j + 1 <= map->map_y - 1) {
 		tmp = create_line(&map_2d[i][j], &map_2d[i][j + 1]);
 		RW_DVA(window, tmp, NULL);
 		sfVertexArray_destroy(tmp);
 	}
-	if (i + 1 <= MAP_X - 1) {
+	if (i + 1 <= map->map_x - 1) {
 		tmp = create_line(&map_2d[i][j], &map_2d[i + 1][j]);
 		RW_DVA(window, tmp, NULL);
 		sfVertexArray_destroy(tmp);
@@ -63,19 +63,19 @@ void	draw_2d_map(sfRenderWindow *window, map_t *map)
 	// state.blendMode = sfBlendAlpha;
 
 	if (map->rotation >= 0 && map->rotation < 90)
-		for (int j = MAP_Y - 1; j >= 0; j--)
-			for (int i = 0; i <= MAP_X - 1; i++)
-				draw_vertex_array(window, map->map_2d, i, j, map->map_3d);
+		for (int j = map->map_y - 1; j >= 0; j--)
+			for (int i = 0; i <= map->map_x - 1; i++)
+				draw_vertex_array(window, map->map_2d, i, j, map->map_3d, map);
 	if (map->rotation >= 90 && map->rotation < 180)
-		for (int i = MAP_X - 1; i >= 0; i--)
-			for (int j = MAP_Y - 1; j >= 0; j--)
-				draw_vertex_array(window, map->map_2d, i, j, map->map_3d);
+		for (int i = map->map_x - 1; i >= 0; i--)
+			for (int j = map->map_y - 1; j >= 0; j--)
+				draw_vertex_array(window, map->map_2d, i, j, map->map_3d, map);
 	if (map->rotation >= 180 && map->rotation < 270)
-		for (int j = 0; j < MAP_Y - 1 ; j++)
-			for (int i = MAP_X - 2; i >= 0; i--)
-				draw_vertex_array(window, map->map_2d, i, j, map->map_3d);
+		for (int j = 0; j < map->map_y - 1 ; j++)
+			for (int i = map->map_x - 2; i >= 0; i--)
+				draw_vertex_array(window, map->map_2d, i, j, map->map_3d, map);
 	if (map->rotation >= 270 && map->rotation <= 360)
-		for (int i = 0; i < MAP_X - 1; i++)
-			for (int j = 0; j < MAP_Y - 1 ; j++)
-				draw_vertex_array(window, map->map_2d, i, j, map->map_3d);
+		for (int i = 0; i < map->map_x - 1; i++)
+			for (int j = 0; j < map->map_y - 1 ; j++)
+				draw_vertex_array(window, map->map_2d, i, j, map->map_3d, map);
 }

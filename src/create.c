@@ -44,12 +44,12 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 	int x_origine = 0;
 	int y_origine = 0;
 
-	if (MAP_X % 2 == 0) {
-		x_origine = ((SCALING_X * map->zoom * (MAP_X - 1)) / 2) + map->move_x;
-		y_origine = ((SCALING_Y * map->zoom * (MAP_Y - 1)) / 2) + map->move_y;
+	if (map->map_x % 2 == 0) {
+		x_origine = ((SCALING_X * map->zoom * (map->map_x - 1)) / 2) + map->move_x;
+		y_origine = ((SCALING_Y * map->zoom * (map->map_y - 1)) / 2) + map->move_y;
 	} else {
-		x_origine = ((SCALING_X * map->zoom * MAP_X) / 2) + map->move_x;
-		y_origine = ((SCALING_Y * map->zoom * MAP_Y) / 2) + map->move_y;
+		x_origine = ((SCALING_X * map->zoom * map->map_x) / 2) + map->move_x;
+		y_origine = ((SCALING_Y * map->zoom * map->map_y) / 2) + map->move_y;
 	}
 	vec.x = (x - x_origine) * cos (rotation) + (y - y_origine) * sin (rotation) + x_origine;
 	vec.y = - (x - x_origine) * sin (rotation) + (y - y_origine) * cos (rotation) + y_origine;
@@ -59,28 +59,39 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 	return(vec);
 }
 
-float	**create_3d_map(int leveling)
+// <<<<<<< HEAD
+// float	**create_3d_map(int leveling)
+// {
+// 	float **map_3d = malloc(sizeof(float *) * MAP_X);
+//
+// 	for (int i = 0; i < MAP_X; i++) {
+// 		map_3d[i] = malloc(sizeof(float) * MAP_Y);
+// 		for (int j = 0; j < MAP_Y; j++) {
+// 			// map_3d[i][j] = Get2DPerlinNoiseValue(i + 0.5, j + 0.5, SCALING_X, SCALING_Y) * leveling;
+// 			// map_3d[i][j] = bruit_coherent2D(i, j, 0.5) * leveling;
+// 			// printf("%f\n", bruit_coherent2D(i, j, 0.5) * leveling);
+// 		}
+// =======
+float	**create_3d_map(map_t *map)
 {
-	float **map_3d = malloc(sizeof(float *) * MAP_X);
+	float **map_3d = malloc(sizeof(int *) * map->map_x);
 
-	for (int i = 0; i < MAP_X; i++) {
-		map_3d[i] = malloc(sizeof(float) * MAP_Y);
-		for (int j = 0; j < MAP_Y; j++) {
-			// map_3d[i][j] = Get2DPerlinNoiseValue(i + 0.5, j + 0.5, SCALING_X, SCALING_Y) * leveling;
-			// map_3d[i][j] = bruit_coherent2D(i, j, 0.5) * leveling;
-			// printf("%f\n", bruit_coherent2D(i, j, 0.5) * leveling);
-		}
+	for (int i = 0; i < map->map_x; i++) {
+		map_3d[i] = malloc(sizeof(int) * map->map_y);
+		for (int j = 0; j < map->map_y; j++)
+			map_3d[i][j] = 0;
+// >>>>>>> 8065cec15760d478cc1b10699b396a9ae08f53f0
 	}
 	return (map_3d);
 }
 
 sfVector2f **create_2d_map(float **map_3d, map_t *map)
 {
-	sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * (MAP_X));
+	sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * (map->map_x));
 
-	for (int j = 0; j < MAP_X; j++) {
-		map_2d[j] = malloc(sizeof(sfVector2f) * MAP_Y);
-		for (int i = 0; i < MAP_Y; i++) {
+	for (int j = 0; j < map->map_x; j++) {
+		map_2d[j] = malloc(sizeof(sfVector2f) * map->map_y);
+		for (int i = 0; i < map->map_y; i++) {
 			map_2d[j][i] = project_iso_point(i * SCALING_X * map->zoom,
 				j * SCALING_Y * map->zoom, map_3d[j][i] * SCALING_Z *map->zoom, map);
 		}

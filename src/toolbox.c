@@ -2,39 +2,10 @@
 ** EPITECH PROJECT, 2018
 ** Project My_world
 ** File description:
-** Main file.
+** toolbox
 */
 
 #include "main.h"
-
-int my_putstrfd(int fd, char *str)
-{
-	int i = 0;
-	while (str[i] != '\0') {
-		write(fd, &str[i], 1);
-		i++;
-	}
-	return (0);
-}
-
-char	*my_itoa(float nb)
-{
-	int len = 0;
-	char *str;
-	float tmp = nb;
-
-	while (tmp > 0) {
-		tmp /= 10;
-		len++;
-	}
-	str = malloc(sizeof(*str) * (len + 1));
-	str[len] = '\0';
-	while (len--) {
-		str[len] = (int)nb % 10  + '0';
-		nb /= 10;
-	}
-	return (str);
-}
 
 int load(all_t *all)
 {
@@ -103,14 +74,14 @@ int	init_toolbox(all_t *all)
 	all->button->text_three = sfRectangleShape_create();
 	all->button->text_four = sfRectangleShape_create();
 
-	all->obj[0] = create_object(scale, "./save.png", pos);
-	all->obj[1] = create_object(scale, "./load.png", pos2);
-	all->obj[2] = create_object(scale, "./more.png", pos3);
-	all->obj[3] = create_object(scale, "./fast.png", pos4);
-	all->obj[4] = create_object(scale, "./square.png", pos5);
-	all->obj[5] = create_object(scale, "./square.png", pos6);
-	all->obj[6] = create_object(scale, "./square.png", pos7);
-	all->obj[7] = create_object(scale, "./square.png", pos8);
+	all->obj[0] = create_object(scale, "./images/save.png", pos);
+	all->obj[1] = create_object(scale, "./images/load.png", pos2);
+	all->obj[2] = create_object(scale, "./images/more.png", pos3);
+	all->obj[3] = create_object(scale, "./images/fast.png", pos4);
+	all->obj[4] = create_object(scale, "./images/square.png", pos5);
+	all->obj[5] = create_object(scale, "./images/square.png", pos6);
+	all->obj[6] = create_object(scale, "./images/square.png", pos7);
+	all->obj[7] = create_object(scale, "./images/square.png", pos8);
 
 	sfRectangleShape_setSize(all->button->rect, size);
 	sfRectangleShape_setPosition(all->button->rect, position);

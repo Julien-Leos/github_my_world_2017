@@ -18,13 +18,14 @@ void	init_map(map_t *map)
 {
 	map->inclinaison = 35;
 	map->rotation = 45;
-	map->map_3d = create_3d_map();
+	map->map_3d = create_3d_map(10);
 	map->map_2d = create_2d_map(map->map_3d, map);
 	map->move_x = 0;
 	map->move_y = 0;
 	map->zoom = 1;
 	map->radius = 6;
 	map->power = 1;
+	map->leveling = 10;
 	map->mouse_circle = sfCircleShape_create();
 	sfCircleShape_setFillColor(map->mouse_circle, sfRed);
 	sfCircleShape_setRadius(map->mouse_circle, 5);
@@ -281,6 +282,16 @@ void	change_brush(obj_t *obj)
 		obj->num_brush = 0;
 }
 
+void	modify_3d_map(map_t *map)
+{
+	for (int i = 0; i < MAP_X; i++)
+		for (int j = 0; j < MAP_Y; j++) {
+			// map->map_3d[i][j] = Get2DPerlinNoiseValue(i + 0.5, j + 0.5, SCALING_X, SCALING_Y) * map->leveling;
+			map->map_3d[i][j] = bruit_coherent2D(i, j, 0.5) * map->leveling;
+			printf("%f\n", map->map_3d[i][j]);
+		}
+}
+
 void	events(all_t *all, window_t *win, map_t *map)
 {
 	if (win->event.type == sfEvtClosed)
@@ -353,10 +364,10 @@ void	events(all_t *all, window_t *win, map_t *map)
 			map->move_y -= 10;
 			break;
 			case sfKeyO:
-			map->zoom += 0.01;
+			map->zoom += 0.05;
 			break;
 			case sfKeyL:
-			map->zoom -= 0.01;
+			map->zoom -= 0.05;
 			break;
 			case sfKeyY:
 			map->power += 0.1;
@@ -369,6 +380,12 @@ void	events(all_t *all, window_t *win, map_t *map)
 			break;
 			case sfKeyJ:
 			map->radius -= 1;
+			break;
+			case sfKeyR:
+			map->leveling += 10;
+			break;
+			case sfKeyF:
+			map->leveling -= 10;
 			break;
 			default:
 			break;
@@ -421,6 +438,7 @@ void	terraforming(window_t *win, map_t *map, obj_t *obj)
 	for (int i = 0; i < MAP_X; i++)
 		free (map->map_2d[i]);
 	free (map->map_2d);
+	modify_3d_map(map);
 	map->map_2d =  create_2d_map(map->map_3d, map);
 	draw_2d_map(win->window, map);
 	if (obj->num_tool == 0)
@@ -460,6 +478,7 @@ int	main()
 {
 	all_t *all = malloc(sizeof(*all));
 	init_all(all);
+	// initBruit2D(SCALING_X, SCALING_Y, 64, 3);
 	while (sfRenderWindow_isOpen(all->win->window)) {
 		which_button(all->win, all->obj);
 		while (RW_PE(all->win->window, &(all->win->event)))
@@ -469,5 +488,6 @@ int	main()
 		draw_window(all->win);
 	}
 	my_free(all);
+	// destroyBruit2D();
 	return (0);
 }

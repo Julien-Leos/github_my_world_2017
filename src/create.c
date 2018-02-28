@@ -59,14 +59,17 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 	return(vec);
 }
 
-float	**create_3d_map()
+float	**create_3d_map(int leveling)
 {
-	float **map_3d = malloc(sizeof(int *) * MAP_X);
+	float **map_3d = malloc(sizeof(float *) * MAP_X);
 
 	for (int i = 0; i < MAP_X; i++) {
-		map_3d[i] = malloc(sizeof(int) * MAP_Y);
-		for (int j = 0; j < MAP_Y; j++)
-			map_3d[i][j] = 0;
+		map_3d[i] = malloc(sizeof(float) * MAP_Y);
+		for (int j = 0; j < MAP_Y; j++) {
+			// map_3d[i][j] = Get2DPerlinNoiseValue(i + 0.5, j + 0.5, SCALING_X, SCALING_Y) * leveling;
+			// map_3d[i][j] = bruit_coherent2D(i, j, 0.5) * leveling;
+			// printf("%f\n", bruit_coherent2D(i, j, 0.5) * leveling);
+		}
 	}
 	return (map_3d);
 }

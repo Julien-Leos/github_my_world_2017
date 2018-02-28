@@ -75,11 +75,35 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 float	**create_3d_map(map_t *map)
 {
 	float **map_3d = malloc(sizeof(int *) * map->map_x);
+	int octave = 3;
+	float persistance = 0.57;
+	float lacunarity = 1.7;
+	float amplitude = 0;
+	float frequency = 0;
+	float noise_height = 0;
+	float perlin_value = 0;
+	float sample_x = 0;
+	float sample_y = 0;
 
 	for (int i = 0; i < map->map_x; i++) {
 		map_3d[i] = malloc(sizeof(int) * map->map_y);
-		for (int j = 0; j < map->map_y; j++)
-			map_3d[i][j] = 0;
+		for (int j = 0; j < map->map_y; j++) {
+			amplitude = 1;
+			frequency = 1;
+			noise_height = 0;
+			for (int i = 0; i < octave; i++) {
+				sample_x = i / SCALING_X * frequency;
+				sample_y = j / SCALING_Y * frequency;
+
+				perlin_value = Get2DPerlinNoiseValue(sample_x, sample_y);
+				noise_height += perlin_value * amplitude;
+
+				amplitude *= persistance;
+				frequency *= lacunarity;
+			}
+			map_3d[i][j] = perlin_value;
+			printf("%f\n", map_3d[i][j]);
+		}
 // >>>>>>> 8065cec15760d478cc1b10699b396a9ae08f53f0
 	}
 	return (map_3d);

@@ -434,7 +434,7 @@ void	terraforming(window_t *win, map_t *map, obj_t *obj)
 	for (int i = 0; i < map->map_x; i++)
 		free (map->map_2d[i]);
 	free (map->map_2d);
-	modify_3d_map(map);
+	// modify_3d_map(map);
 	map->map_2d =  create_2d_map(map->map_3d, map);
 	draw_2d_map(win->window, map);
 	if (obj->num_tool == 0)

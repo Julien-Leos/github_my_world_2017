@@ -82,13 +82,13 @@
 	double bruit_coherent2D(double x, double y, double persistance);
 	void destroyBruit2D();
 
-	float Get2DPerlinNoiseValue(float, float, float, float);
+	float Get2DPerlinNoiseValue(float, float);
 	void draw_2d_map(sfRenderWindow *, map_t*);
 	sfVertexArray *create_line(sfVector2f *, sfVector2f *);
 	sfVertexArray *create_quads(sfVector2f *, sfVector2f *, sfVector2f *, sfVector2f *, sfColor);
 	sfVector2f project_iso_point(int, int, int, map_t *);
 	sfVector2f **create_2d_map(float **, map_t *);
-	float **create_3d_map(int);
+	float **create_3d_map(map_t*);
 	obj_t create_object(sfVector2f, char *, sfVector2f);
 	int init_toolbox(all_t *);
 	int buttonIsClicked(obj_t *, sfVector2i, int);

@@ -11,7 +11,6 @@ SRC	=		src/create.c \
 			src/display.c \
 			src/toolbox.c \
 			src/get_next_line.c \
-			src/my_getnbr.c	\
 			src/noise_test.c	\
 			src/my_getnbr.c \
 			src/events.c \
@@ -25,7 +24,6 @@ SRC	=		src/create.c \
 			src/textbox.c \
 			src/utilities.c \
 			src/change.c
->>>>>>> 8065cec15760d478cc1b10699b396a9ae08f53f0
 
 UT_SRC	=	tests/main_test.c
 

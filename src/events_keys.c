@@ -17,12 +17,12 @@ void key_switch1(window_t *win, map_t *map)
 		map->inclinaison += 1;
 		break;
 		case sfKeyQ:
-		map->rotation -= 1;
+		map->rotation -= 2;
 		if (map->rotation <= 0)
 			map->rotation = 360;
 		break;
 		case sfKeyD:
-		map->rotation += 1;
+		map->rotation += 2;
 		if (map->rotation >= 360)
 			map->rotation = 0;
 		break;
@@ -35,19 +35,19 @@ void key_switch2(window_t *win, map_t *map)
 {
 	switch(win->event.key.code) {
 		case sfKeyLeft:
-		map->move_x += 10;
+		map->move_x += 20;
 		break;
 		case sfKeyRight:
-		map->move_x -= 10;
+		map->move_x -= 20;
 		break;
 		case sfKeyUp:
-		map->move_y += 10;
+		map->move_y += 20;
 		break;
 		case sfKeyDown:
-		map->move_y -= 10;
+		map->move_y -= 20;
 		break;
 		case sfKeyO:
-		map->zoom += 0.01;
+		map->zoom += 0.03;
 		break;
 		default:
 		break;
@@ -58,7 +58,7 @@ void key_switch3(window_t *win, map_t *map)
 {
 	switch(win->event.key.code) {
 		case sfKeyL:
-		map->zoom -= 0.01;
+		map->zoom -= 0.03;
 		break;
 		case sfKeyY:
 		map->power += 0.1;
@@ -71,6 +71,9 @@ void key_switch3(window_t *win, map_t *map)
 		break;
 		case sfKeyJ:
 		map->radius -= 1;
+		break;
+		case sfKeyV:
+		lol *= -1;
 		break;
 		default:
 		break;

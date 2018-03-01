@@ -45,17 +45,17 @@ sfVector2f project_iso_point(int x, int y, int z, map_t *map)
 	int y_origine = 0;
 
 	if (map->map_x % 2 == 0) {
-		x_origine = ((SCALING_X * map->zoom * (map->map_x - 1)) / 2) + map->move_x;
-		y_origine = ((SCALING_Y * map->zoom * (map->map_y - 1)) / 2) + map->move_y;
+		x_origine = ((SCALING_X * map->zoom * (map->map_x - 1)) / 2);
+		y_origine = ((SCALING_Y * map->zoom * (map->map_y - 1)) / 2);
 	} else {
-		x_origine = ((SCALING_X * map->zoom * map->map_x) / 2) + map->move_x;
-		y_origine = ((SCALING_Y * map->zoom * map->map_y) / 2) + map->move_y;
+		x_origine = ((SCALING_X * map->zoom * map->map_x) / 2);
+		y_origine = ((SCALING_Y * map->zoom * map->map_y) / 2);
 	}
 	vec.x = (x - x_origine) * cos (rotation) + (y - y_origine) * sin (rotation) + x_origine;
 	vec.y = - (x - x_origine) * sin (rotation) + (y - y_origine) * cos (rotation) + y_origine;
 	vec.y = (vec.y - y_origine) * cos (inclinaison) - (z) * sin (inclinaison) + y_origine;
-	vec.x += 1920 / 2 - x_origine;
-	vec.y += 1080 / 2 - y_origine;
+	vec.x += 1920 / 2 - x_origine + map->move_x;
+	vec.y += 1080 / 2 - y_origine + map->move_y;
 	return(vec);
 }
 
@@ -89,8 +89,7 @@ float	**create_3d_map(map_t *map)
 			// 	amplitude *= persistance;
 			// 	frequency *= lacunarity;
 			// }
-			// map_3d[i][j] = noise_height * 50;
-			// printf("%f\n", map_3d[i][j]);
+			// map_3d[i][j] = noise_height * 20;
 		}
 	}
 	return (map_3d);

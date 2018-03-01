@@ -76,9 +76,9 @@ int	init_toolbox(all_t *all)
 
 	all->obj[0] = create_object(scale, "./images/save.png", pos);
 	all->obj[1] = create_object(scale, "./images/load.png", pos2);
-	all->obj[2] = create_object(scale, "./images/more.png", pos3);
-	all->obj[3] = create_object(scale, "./images/fast.png", pos4);
-	all->obj[4] = create_object(scale, "./images/square.png", pos5);
+	all->obj[2] = create_object(scale, "./images/up.png", pos3);
+	all->obj[3] = create_object(scale, "./images/down.png", pos4);
+	all->obj[4] = create_object(scale, "./images/level.png", pos5);
 	all->obj[5] = create_object(scale, "./images/square.png", pos6);
 	all->obj[6] = create_object(scale, "./images/square.png", pos7);
 	all->obj[7] = create_object(scale, "./images/square.png", pos8);

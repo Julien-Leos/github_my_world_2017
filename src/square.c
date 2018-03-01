@@ -33,9 +33,22 @@ void	select_square(window_t *win, map_t *map)
 
 	map->x_max = -1;
 	map->y_max = -1;
-	for (int i = 0; i < map->map_x - 1; i++)
-		for (int j = 0; j < map->map_y - 1; j++)
-			which_select_square(win, map, i, j);
+	if (map->rotation >= 0 && map->rotation < 90)
+		for (int j = map->map_y - 1; j >= 0; j--)
+			for (int i = 0; i <= map->map_x - 1; i++)
+				which_select_square(win, map, i, j);
+	if (map->rotation >= 90 && map->rotation < 180)
+		for (int i = map->map_x - 1; i >= 0; i--)
+			for (int j = map->map_y - 1; j >= 0; j--)
+				which_select_square(win, map, i, j);
+	if (map->rotation >= 180 && map->rotation < 270)
+		for (int j = 0; j < map->map_y - 1 ; j++)
+			for (int i = map->map_x - 1; i >= 0; i--)
+				which_select_square(win, map, i, j);
+	if (map->rotation >= 270 && map->rotation <= 360)
+		for (int i = 0; i < map->map_x - 1; i++)
+			for (int j = 0; j < map->map_y - 1 ; j++)
+				which_select_square(win, map, i, j);
 	if (map->x_max != -1 && map->y_max != -1) {
 		circle_pos.x = map->map_2d[map->x_max][map->y_max].x - 5;
 		circle_pos.y = map->map_2d[map->x_max][map->y_max].y - 5;

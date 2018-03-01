@@ -19,13 +19,10 @@ void event_scrolled(window_t *win, map_t *map)
 
 void event_brush(all_t *all, map_t *map)
 {
-	if (sfMouse_isButtonPressed(sfMouseLeft) && all->obj->num_brush == 1) {
+	if (sfMouse_isButtonPressed(sfMouseLeft))
 		up_tool_brush(map, all->obj);
-	} else if (sfMouse_isButtonPressed(sfMouseRight) && all->obj->num_brush == 1) {
-		down_tool_brush(map, all->obj);
-	} else {
+	else
 		map->brush_altitude = -1;
-	}
 }
 
 void event_button(all_t *all, window_t *win, int *box)
@@ -54,10 +51,13 @@ void event_button(all_t *all, window_t *win, int *box)
 			load(all);
 			break;
 			case 2:
-			change_tool(all->obj);
+			all->obj->num_tool = 0;
 			break;
 			case 3:
-			change_brush(all->obj);
+			all->obj->num_tool = 1;
+			break;
+			case 4:
+			all->obj->num_tool = 2;
 			break;
 		}
 	}

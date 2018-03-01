@@ -7,12 +7,24 @@
 
 #include "main.h"
 
+void	init_color_tab(map_t *map)
+{
+	int rand_value = 0;
+
+	for (int i = 0; i < map->map_x; i++) {
+		for (int j = 0; j < map->map_y; j++) {
+			rand_value = rand() % 20;
+			map->color_tab_grass[i][j] = sfColor_fromRGB(58 + rand_value, 157 + rand_value, 35 + rand_value);
+			map->color_tab_dirt[i][j] = sfColor_fromRGB(143 + rand_value, 89 + rand_value, 34 + rand_value);
+			map->color_tab_stone[i][j] = sfColor_fromRGB(153 + rand_value, 153 + rand_value, 153 + rand_value);
+		}
+	}
+}
 
 void	init_obj(obj_t *obj)
 {
 	obj->num_button = 0;
-	obj->num_tool = 2;
-	obj->num_brush = 0;
+	obj->num_tool = 0;
 }
 
 void	init_map(map_t *map)
@@ -30,6 +42,15 @@ void	init_map(map_t *map)
 	map->power = 1;
 	map->mouse_circle = sfCircleShape_create();
 	map->brush_altitude = -1;
+	map->color_tab_grass = malloc(sizeof(sfColor*) * map->map_x);
+	map->color_tab_dirt = malloc(sizeof(sfColor*) * map->map_x);
+	map->color_tab_stone = malloc(sizeof(sfColor*) * map->map_x);
+	for (int i = 0; i < map->map_x; i++) {
+		map->color_tab_grass[i] = malloc(sizeof(sfColor) * map->map_y);
+		map->color_tab_dirt[i] = malloc(sizeof(sfColor) * map->map_y);
+		map->color_tab_stone[i] = malloc(sizeof(sfColor) * map->map_y);
+	}
+	init_color_tab(map);
 	sfCircleShape_setFillColor(map->mouse_circle, sfRed);
 	sfCircleShape_setRadius(map->mouse_circle, 5);
 }

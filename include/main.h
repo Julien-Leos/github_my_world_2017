@@ -43,6 +43,9 @@
 		float power;
 		float leveling;
 		float brush_altitude;
+		sfColor **color_tab_grass;
+		sfColor **color_tab_dirt;
+		sfColor **color_tab_stone;
 		sfCircleShape *mouse_circle;
 	} map_t;
 
@@ -52,7 +55,6 @@
 		sfVector2f pos;
 		int num_button;
 		int num_tool;
-		int num_brush;
 	} obj_t;
 
 	typedef struct button_s {
@@ -85,7 +87,7 @@
 	double bruit_coherent2D(double x, double y, double persistance);
 	void destroyBruit2D();
 
-	void	up_brush_nivelling(map_t *map);
+	void	brush_nivelling(map_t *map);
 	float Get2DPerlinNoiseValue(float, float);
 	float PerlinNoise_2D(float x, float y);
 	float InterpolatedNoise_1(float x, float y);
@@ -121,6 +123,7 @@
 	void	select_corner(window_t *win, map_t *map);
 	void	up_square_brush(map_t *map);
 	void	up_brush(map_t *map);
+	void	down_brush(map_t *map);
 	void	up_corner_brush(map_t *map);
 	void	down_square_brush(map_t *map);
 	void	down_corner_brush(map_t *map);

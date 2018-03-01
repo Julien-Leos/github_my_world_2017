@@ -22,11 +22,11 @@ sfColor select_color(map_t *map, int i, int j)
 	min = (min < map->map_3d[i + 1][j + 1]) ? min : map->map_3d[i + 1][j + 1];
 
 	if (max - min >= 0 && max - min < 1) {
-		return (map->color_tab_grass[i][j]);
+		return (map->color_tab[0][i][j]);
 	} else if (max - min >= 1 && max - min <= 3) {
-		return (map->color_tab_dirt[i][j]);
+		return (map->color_tab[1][i][j]);
 	} else {
-		return (map->color_tab_stone[i][j]);
+		return (map->color_tab[2][i][j]);
 	}
 }
 
@@ -54,7 +54,7 @@ void	draw_vertex_array(sfRenderWindow *window, sfVector2f **map_2d, int i, int j
 	}
 }
 
-void	draw_2d_map(sfRenderWindow *window, map_t *map)
+void	draw_2d_map(sfRenderWindow *window, map_t *map, settings_t *stg)
 {
 	// sfTexture *grass= sfTexture_createFromFile("assets/grass1.png", NULL);
 	// sfRenderStates state;
@@ -64,19 +64,19 @@ void	draw_2d_map(sfRenderWindow *window, map_t *map)
 	// state.blendMode = sfBlendAlpha;
 
 	// printf("%f\n", map->rotation);
-	if (map->rotation >= 0 && map->rotation < 90)
+	if (stg->rotation >= 0 && stg->rotation < 90)
 		for (int j = map->map_y - 1; j >= 0; j--)
 			for (int i = 0; i <= map->map_x - 1; i++)
 				draw_vertex_array(window, map->map_2d, i, j, map);
-	if (map->rotation >= 90 && map->rotation < 180)
+	if (stg->rotation >= 90 && stg->rotation < 180)
 		for (int i = map->map_x - 1; i >= 0; i--)
 			for (int j = map->map_y - 1; j >= 0; j--)
 				draw_vertex_array(window, map->map_2d, i, j, map);
-	if (map->rotation >= 180 && map->rotation < 270)
+	if (stg->rotation >= 180 && stg->rotation < 270)
 		for (int j = 0; j < map->map_y - 1 ; j++)
 			for (int i = map->map_x - 1; i >= 0; i--)
 				draw_vertex_array(window, map->map_2d, i, j, map);
-	if (map->rotation >= 270 && map->rotation <= 360)
+	if (stg->rotation >= 270 && stg->rotation <= 360)
 		for (int i = 0; i < map->map_x - 1; i++)
 			for (int j = 0; j < map->map_y - 1 ; j++)
 				draw_vertex_array(window, map->map_2d, i, j, map);

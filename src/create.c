@@ -36,41 +36,41 @@ sfVertexArray *create_quads(sfVector2f *point1, sfVector2f *point2,
 	return (vertex_array);
 }
 
-sfVector2f project_iso_point(int x, int y, int z, map_t *map)
+sfVector2f project_iso_point(int x, int y, int z, settings_t *stg, map_t *map)
 {
 	sfVector2f vec = {0, 0};
-	double rotation = (map->rotation / 180.0 * M_PI);
-	double inclinaison = (map->inclinaison / 180.0 * M_PI);
+	double rotation = (stg->rotation / 180.0 * M_PI);
+	double inclinaison = (stg->inclinaison / 180.0 * M_PI);
 	int x_origine = 0;
 	int y_origine = 0;
 
 	if (map->map_x % 2 == 0) {
-		x_origine = ((SCALING_X * map->zoom * (map->map_x - 1)) / 2);
-		y_origine = ((SCALING_Y * map->zoom * (map->map_y - 1)) / 2);
+		x_origine = ((SCALING_X * stg->zoom * (map->map_x - 1)) / 2);
+		y_origine = ((SCALING_Y * stg->zoom * (map->map_y - 1)) / 2);
 	} else {
-		x_origine = ((SCALING_X * map->zoom * map->map_x) / 2);
-		y_origine = ((SCALING_Y * map->zoom * map->map_y) / 2);
+		x_origine = ((SCALING_X * stg->zoom * map->map_x) / 2);
+		y_origine = ((SCALING_Y * stg->zoom * map->map_y) / 2);
 	}
 	vec.x = (x - x_origine) * cos (rotation) + (y - y_origine) * sin (rotation) + x_origine;
 	vec.y = - (x - x_origine) * sin (rotation) + (y - y_origine) * cos (rotation) + y_origine;
 	vec.y = (vec.y - y_origine) * cos (inclinaison) - (z) * sin (inclinaison) + y_origine;
-	vec.x += 1920 / 2 - x_origine + map->move_x;
-	vec.y += 1080 / 2 - y_origine + map->move_y;
+	vec.x += (1920 / 2) - x_origine + stg->offset_x;
+	vec.y += (1080 / 2) - y_origine + stg->offset_y;
 	return(vec);
 }
 
 float	**create_3d_map(map_t *map)
 {
-	float **map_3d = malloc(sizeof(int *) * map->map_x);
-	int octave = 4;
-	float persistance = 0.57;
-	float lacunarity = 1.72;
-	float amplitude = 0;
-	float frequency = 0;
-	float noise_height = 0;
-	float perlin_value = 0;
-	float sample_x = 0;
-	float sample_y = 0;
+	float **map_3d = malloc(sizeof(int*) * map->map_x);
+	// int octave = 4;
+	// float persistance = 0.57;
+	// float lacunarity = 1.72;
+	// float amplitude = 0;
+	// float frequency = 0;
+	// float noise_height = 0;
+	// float perlin_value = 0;
+	// float sample_x = 0;
+	// float sample_y = 0;
 
 	for (int i = 0; i < map->map_x; i++) {
 		map_3d[i] = malloc(sizeof(int) * map->map_y);
@@ -95,15 +95,15 @@ float	**create_3d_map(map_t *map)
 	return (map_3d);
 }
 
-sfVector2f **create_2d_map(float **map_3d, map_t *map)
+sfVector2f **create_2d_map(float **map_3d, map_t *map, settings_t *stg)
 {
-	sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * (map->map_x));
+	sfVector2f **map_2d = malloc(sizeof(sfVector2f*) * map->map_x);
 
 	for (int j = 0; j < map->map_x; j++) {
 		map_2d[j] = malloc(sizeof(sfVector2f) * map->map_y);
 		for (int i = 0; i < map->map_y; i++) {
-			map_2d[j][i] = project_iso_point(i * SCALING_X * map->zoom,
-				j * SCALING_Y * map->zoom, map_3d[j][i] * SCALING_Z *map->zoom, map);
+			map_2d[j][i] = project_iso_point(i * SCALING_X * stg->zoom,
+				j * SCALING_Y * stg->zoom, map_3d[j][i] * SCALING_Z *stg->zoom, stg, map);
 		}
 	}
 	return (map_2d);

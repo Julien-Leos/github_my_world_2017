@@ -13,7 +13,7 @@ void	draw_square(sfRenderWindow *win, sfCircleShape *circle, sfVector2f pos)
 	sfRenderWindow_drawCircleShape(win, circle, NULL);
 }
 
-void	which_select_square(window_t *win, map_t *map, int i, int j)
+void	which_select_square(window_t *win, map_t *map, settings_t *stg, brush_t *brs, int i, int j)
 {
 	sfVector2i m_pos = win->mouse_pos;
 
@@ -22,45 +22,18 @@ void	which_select_square(window_t *win, map_t *map, int i, int j)
 	calc_sqr(map->map_2d[i][j + 1], map->map_2d[i + 1][j + 1], m_pos) > 0 &&
 	calc_sqr(map->map_2d[i + 1][j], map->map_2d[i + 1][j + 1], m_pos) < 0 &&
 	is_mouse_on_toolbox(win->mouse_pos) == 0) {
-		map->x_max = (i > map->x_max) ? i : map->x_max;
-		map->y_max = (j > map->y_max) ? j : map->y_max;
-	}
-}
-
-void	select_square(window_t *win, map_t *map)
-{
-	sfVector2f circle_pos = {0, 0};
-
-	map->x_max = -1;
-	map->y_max = -1;
-	if (map->rotation >= 0 && map->rotation < 90)
-		for (int j = map->map_y - 1; j >= 0; j--)
-			for (int i = 0; i <= map->map_x - 1; i++)
-				which_select_square(win, map, i, j);
-	if (map->rotation >= 90 && map->rotation < 180)
-		for (int i = map->map_x - 1; i >= 0; i--)
-			for (int j = map->map_y - 1; j >= 0; j--)
-				which_select_square(win, map, i, j);
-	if (map->rotation >= 180 && map->rotation < 270)
-		for (int j = 0; j < map->map_y - 1 ; j++)
-			for (int i = map->map_x - 1; i >= 0; i--)
-				which_select_square(win, map, i, j);
-	if (map->rotation >= 270 && map->rotation <= 360)
-		for (int i = 0; i < map->map_x - 1; i++)
-			for (int j = 0; j < map->map_y - 1 ; j++)
-				which_select_square(win, map, i, j);
-	if (map->x_max != -1 && map->y_max != -1) {
-		circle_pos.x = map->map_2d[map->x_max][map->y_max].x - 5;
-		circle_pos.y = map->map_2d[map->x_max][map->y_max].y - 5;
-		draw_square(win->window, map->mouse_circle, circle_pos);
-		circle_pos.x = map->map_2d[map->x_max][map->y_max + 1].x - 5;
-		circle_pos.y = map->map_2d[map->x_max][map->y_max + 1].y - 5;
-		draw_square(win->window, map->mouse_circle, circle_pos);
-		circle_pos.x = map->map_2d[map->x_max + 1][map->y_max].x - 5;
-		circle_pos.y = map->map_2d[map->x_max + 1][map->y_max].y - 5;
-		draw_square(win->window, map->mouse_circle, circle_pos);
-		circle_pos.x = map->map_2d[map->x_max + 1][map->y_max + 1].x - 5;
-		circle_pos.y = map->map_2d[map->x_max + 1][map->y_max + 1].y - 5;
-		draw_square(win->window, map->mouse_circle, circle_pos);
+		if (stg->rotation >= 0 && stg->rotation < 90) {
+			brs->brush_max_x = (i > brs->brush_max_x) ? i : brs->brush_max_x;
+			brs->brush_max_y = (j < brs->brush_max_y) ? j : brs->brush_max_y;
+		} else if (stg->rotation >= 90 && stg->rotation < 180) {
+			brs->brush_max_x = (i < brs->brush_max_x) ? i : brs->brush_max_x;
+			brs->brush_max_y = (j < brs->brush_max_y) ? j : brs->brush_max_y;
+		} else if (stg->rotation >= 180 && stg->rotation < 270) {
+			brs->brush_max_x = (i < brs->brush_max_x) ? i : brs->brush_max_x;
+			brs->brush_max_y = (j > brs->brush_max_y) ? j : brs->brush_max_y;
+		} else if (stg->rotation >= 270 && stg->rotation <= 360) {
+			brs->brush_max_x = (i > brs->brush_max_x) ? i : brs->brush_max_x;
+			brs->brush_max_y = (j > brs->brush_max_y) ? j : brs->brush_max_y;
+		}
 	}
 }

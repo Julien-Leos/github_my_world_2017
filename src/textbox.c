@@ -7,7 +7,7 @@
 
 #include "main.h"
 
-void textbox(window_t *win, map_t *map, int *box)
+void textbox(window_t *win, map_t *map, settings_t *stg, int *box)
 {
 	static int i = 0;
 	int j = 0;
@@ -35,7 +35,7 @@ void textbox(window_t *win, map_t *map, int *box)
 		free(map->map_3d);
 		free(map->map_2d);
 		map->map_3d = create_3d_map(map);
-		map->map_2d = create_2d_map(map->map_3d, map);
+		map->map_2d = create_2d_map(map->map_3d, map, stg);
 		for (int j = 0; j != i; ++j)
 			win->input[j] = '\0';
 		*box = 0;

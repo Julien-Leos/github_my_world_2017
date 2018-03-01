@@ -7,70 +7,136 @@
 
 #include "main.h"
 
-void key_switch1(window_t *win, map_t *map)
+void	increase_inclinaison(settings_t *stg)
+{
+	stg->inclinaison += 1;
+	if (stg->inclinaison > 70)
+		stg->inclinaison = 70;
+}
+
+void	decrease_inclinaison(settings_t *stg)
+{
+	stg->inclinaison -= 1;
+	if (stg->inclinaison < 20)
+		stg->inclinaison = 20;
+}
+
+void	increase_rotation(settings_t *stg)
+{
+	stg->rotation += 2;
+	if (stg->rotation > 359)
+		stg->rotation = 0;
+}
+
+void	decrease_rotation(settings_t *stg)
+{
+	stg->rotation -= 2;
+	if (stg->rotation < 0)
+		stg->rotation = 359;
+}
+
+void	increase_zoom(settings_t *stg)
+{
+	stg->zoom += 0.03;
+	if (stg->zoom > 1.5)
+		stg->zoom = 1.5;
+}
+
+void	decrease_zoom(settings_t *stg)
+{
+	stg->zoom -= 0.03;
+	if (stg->zoom < 0.3)
+		stg->zoom = 0.3;
+}
+
+void	increase_strength(brush_t *brs)
+{
+	brs->brush_strength += 0.1;
+	if (brs->brush_strength > 2)
+		brs->brush_strength = 2;
+}
+
+void	decrease_strength(brush_t *brs)
+{
+	brs->brush_strength -= 0.1;
+	if (brs->brush_strength < 0.3)
+		brs->brush_strength = 0.3;
+}
+
+void	increase_radius(brush_t *brs)
+{
+	brs->brush_radius += 1;
+	if (brs->brush_radius > 20)
+		brs->brush_radius = 20;
+}
+
+void	decrease_radius(brush_t *brs)
+{
+	brs->brush_radius -= 1;
+	if (brs->brush_radius < 1)
+		brs->brush_radius = 1;
+}
+
+void	key_switch1(window_t *win, settings_t *stg)
 {
 	switch(win->event.key.code) {
-		case sfKeyZ:
-		map->inclinaison -= 1;
-		break;
 		case sfKeyS:
-		map->inclinaison += 1;
+		increase_inclinaison(stg);
 		break;
-		case sfKeyQ:
-		map->rotation -= 2;
-		if (map->rotation <= 0)
-			map->rotation = 360;
+		case sfKeyZ:
+		decrease_inclinaison(stg);
 		break;
 		case sfKeyD:
-		map->rotation += 2;
-		if (map->rotation >= 360)
-			map->rotation = 0;
+		increase_rotation(stg);
 		break;
-		default:
-		break;
-	}
-}
-
-void key_switch2(window_t *win, map_t *map)
-{
-	switch(win->event.key.code) {
-		case sfKeyLeft:
-		map->move_x += 20;
-		break;
-		case sfKeyRight:
-		map->move_x -= 20;
-		break;
-		case sfKeyUp:
-		map->move_y += 20;
-		break;
-		case sfKeyDown:
-		map->move_y -= 20;
+		case sfKeyQ:
+		decrease_rotation(stg);
 		break;
 		case sfKeyO:
-		map->zoom += 0.03;
+		increase_zoom(stg);
 		break;
 		default:
 		break;
 	}
 }
 
-void key_switch3(window_t *win, map_t *map)
+void key_switch2(window_t *win, settings_t *stg)
 {
 	switch(win->event.key.code) {
 		case sfKeyL:
-		map->zoom -= 0.03;
+		decrease_zoom(stg);
 		break;
+		case sfKeyLeft:
+		stg->offset_x += 20;
+		break;
+		case sfKeyRight:
+		stg->offset_x -= 20;
+		break;
+		case sfKeyUp:
+		stg->offset_y += 20;
+		break;
+		case sfKeyDown:
+		stg->offset_y -= 20;
+		break;
+		default:
+		break;
+	}
+}
+
+void key_switch3(window_t *win, brush_t *brs)
+{
+	switch(win->event.key.code) {
 		case sfKeyY:
-		map->power += 0.1;
+		increase_strength(brs);
 		break;
 		case sfKeyH:
-		map->power -= 0.1;
+		decrease_strength(brs);
 		break;
 		case sfKeyG:
-		map->radius += 1;
+		increase_radius(brs);
 		break;
 		case sfKeyJ:
-		map->radius -= 1;
+		decrease_radius(brs);
 		break;
 		case sfKeyV:
 		lol *= -1;
@@ -80,11 +146,11 @@ void key_switch3(window_t *win, map_t *map)
 	}
 }
 
-void event_keys(window_t *win, map_t *map, int *box)
+void event_keys(window_t *win, settings_t *stg, brush_t *brs, int *box)
 {
 	if (win->event.type == sfEvtKeyPressed && *box == 0) {
-		key_switch1(win, map);
-		key_switch2(win, map);
-		key_switch3(win, map);
+		key_switch1(win, stg);
+		key_switch2(win, stg);
+		key_switch3(win, brs);
 	}
 }

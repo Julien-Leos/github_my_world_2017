@@ -18,12 +18,9 @@ SRC	=		src/create.c \
 			src/init.c \
 			src/square.c \
 			src/brush.c \
-			src/brush2.c \
-			src/coners_and_calc_sqr.c \
 			src/draw.c \
 			src/textbox.c \
 			src/utilities.c \
-			src/change.c
 
 UT_SRC	=	tests/main_test.c
 

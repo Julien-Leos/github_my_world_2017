@@ -11,6 +11,9 @@ int	is_mouse_on_toolbox(sfVector2i mouse_pos)
 {
 	if (mouse_pos.x >= 0 && mouse_pos.x <= 128)
 		return (1);
+	else if (mouse_pos.x >= 1400 && mouse_pos.x <= 1800 &&
+	mouse_pos.y >= 10 && mouse_pos.y <= 80)
+		return (1);
 	return (0);
 }
 

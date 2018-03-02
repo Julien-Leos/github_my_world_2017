@@ -30,16 +30,19 @@ UT_OBJ	=	$(SRC:.c=.o) $(UT_SRC:.c=.o)
 
 CFLAGS	=	-Wextra -W -Wall -I ./include/ -lcsfml-graphics -lcsfml-window -lcsfml-system -lcsfml-audio -g3 -lm
 
-LDFLAGS	=
+MLFLAGS	=	-Wextra -W -Wall -I ./include/ -lc_graph_prog -g3 -lm
 
-NAME	=	My_world
+NAME	=	my_world
 
 CC	=	gcc
 
 all:	$(NAME)
 
 $(NAME):	$(OBJ)
-		$(CC) -o $(NAME) $(OBJ) $(CFLAGS)
+		$(CC) -o $(NAME) $(OBJ) $(MLFLAGS)
+
+dev:	$(OBJ)
+	$(CC) -o $(NAME) $(OBJ) $(CFLAGS)
 
 clean:
 	rm -f $(OBJ)

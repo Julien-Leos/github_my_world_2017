@@ -36,7 +36,7 @@ void textbox(window_t *win, map_t *map, settings_t *stg, int *box)
 
 	if (i == 16)
 		i--;
-	if (win->event.text.unicode == 13) {
+	if (win->event.text.unicode == 13 || win->event.text.unicode == 10) {
 		for (; win->input[j] != 'x'; j++);
 		save = j + 1;
 		for (int a = 0; win->input[a] != 'x'; a++) {

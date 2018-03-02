@@ -29,8 +29,8 @@ void	init_obj(obj_t *obj)
 
 void	init_map(map_t *map, settings_t *stg)
 {
-	map->map_x = 150;
-	map->map_y = 150;
+	map->map_x = 10;
+	map->map_y = 10;
 	map->map_3d = create_3d_map(map);
 	map->map_2d = create_2d_map(map->map_3d, map, stg);
 	map->color_tab = malloc(sizeof(sfColor**) * 3);

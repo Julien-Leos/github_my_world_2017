@@ -7,6 +7,23 @@
 
 #include "main.h"
 
+void reset(map_t *map, settings_t *stg)
+{
+	free(map->map_3d);
+	free(map->map_2d);
+	free(map->color_tab);
+	map->map_3d = create_3d_map(map);
+	map->map_2d = create_2d_map(map->map_3d, map, stg);
+	map->color_tab = malloc(sizeof(sfColor**) * 3);
+	for (int i = 0; i < 3; i++) {
+		map->color_tab[i] = malloc(sizeof(sfColor*) * map->map_x);
+		for (int e = 0; e < map->map_x; e++) {
+			map->color_tab[i][e] = malloc(sizeof(sfColor) * map->map_y);
+		}
+	}
+	init_color_tab(map);
+}
+
 void textbox(window_t *win, map_t *map, settings_t *stg, int *box)
 {
 	static int i = 0;
@@ -17,6 +34,8 @@ void textbox(window_t *win, map_t *map, settings_t *stg, int *box)
 	int num2 = 0;
 	int power = 0;
 
+	if (i == 16)
+		i--;
 	if (win->event.text.unicode == 13) {
 		for (; win->input[j] != 'x'; j++);
 		save = j + 1;
@@ -32,17 +51,16 @@ void textbox(window_t *win, map_t *map, settings_t *stg, int *box)
 		}
 		map->map_x = num;
 		map->map_y = num2;
-		free(map->map_3d);
-		free(map->map_2d);
-		map->map_3d = create_3d_map(map);
-		map->map_2d = create_2d_map(map->map_3d, map, stg);
+		reset(map, stg);
 		for (int j = 0; j != i; ++j)
 			win->input[j] = '\0';
 		*box = 0;
 		i = 0;
-	} else if (win->event.text.unicode == 8)
+	} else if (win->event.text.unicode == 8) {
 		win->input[i - 1] = '\0';
-	else {
+		if (i > 0)
+			--i;
+	} else {
 		win->input[i] = win->event.text.unicode;
 		i++;
 	}

@@ -61,7 +61,7 @@ sfVector2f project_iso_point(int x, int y, int z, settings_t *stg, map_t *map)
 
 float	**create_3d_map(map_t *map)
 {
-	float **map_3d = malloc(sizeof(int*) * map->map_x);
+	float **map_3d = malloc(sizeof(int*) * (map->map_x + 1000));
 	// int octave = 4;
 	// float persistance = 0.57;
 	// float lacunarity = 1.72;
@@ -73,7 +73,7 @@ float	**create_3d_map(map_t *map)
 	// float sample_y = 0;
 
 	for (int i = 0; i < map->map_x; i++) {
-		map_3d[i] = malloc(sizeof(int) * map->map_y);
+		map_3d[i] = malloc(sizeof(int) * (map->map_y + 1000));
 		for (int j = 0; j < map->map_y; j++) {
 			map_3d[i][j] = 0;
 			// amplitude = 1;
@@ -97,10 +97,10 @@ float	**create_3d_map(map_t *map)
 
 sfVector2f **create_2d_map(float **map_3d, map_t *map, settings_t *stg)
 {
-	sfVector2f **map_2d = malloc(sizeof(sfVector2f*) * map->map_x);
+	sfVector2f **map_2d = malloc(sizeof(sfVector2f*) * (map->map_x + 1000));
 
 	for (int j = 0; j < map->map_x; j++) {
-		map_2d[j] = malloc(sizeof(sfVector2f) * map->map_y);
+		map_2d[j] = malloc(sizeof(sfVector2f) * (map->map_y + 1000));
 		for (int i = 0; i < map->map_y; i++) {
 			map_2d[j][i] = project_iso_point(i * SCALING_X * stg->zoom,
 				j * SCALING_Y * stg->zoom, map_3d[j][i] * SCALING_Z *stg->zoom, stg, map);

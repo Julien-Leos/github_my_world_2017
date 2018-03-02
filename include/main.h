@@ -132,4 +132,6 @@
 	void event_keys(window_t *win, settings_t *, brush_t *, int *box);
 	sfRenderWindow *my_window_create(void);
 	int my_putstrfd(int fd, char *str);
+	void init_color_tab(map_t *map);
+
 #endif

@@ -10,8 +10,8 @@
 void	increase_inclinaison(settings_t *stg)
 {
 	stg->inclinaison += 1;
-	if (stg->inclinaison > 70)
-		stg->inclinaison = 70;
+	if (stg->inclinaison > 80)
+		stg->inclinaison = 80;
 }
 
 void	decrease_inclinaison(settings_t *stg)
@@ -45,8 +45,8 @@ void	increase_zoom(settings_t *stg)
 void	decrease_zoom(settings_t *stg)
 {
 	stg->zoom -= 0.03;
-	if (stg->zoom < 0.3)
-		stg->zoom = 0.3;
+	if (stg->zoom < 0.2)
+		stg->zoom = 0.2;
 }
 
 void	increase_strength(brush_t *brs)
@@ -73,8 +73,8 @@ void	increase_radius(brush_t *brs)
 void	decrease_radius(brush_t *brs)
 {
 	brs->brush_radius -= 1;
-	if (brs->brush_radius < 1)
-		brs->brush_radius = 1;
+	if (brs->brush_radius < 2)
+		brs->brush_radius = 2;
 }
 
 void	key_switch1(window_t *win, settings_t *stg)

@@ -40,14 +40,6 @@ void	init_map(map_t *map, settings_t *stg)
 			map->color_tab[i][e] = malloc(sizeof(sfColor) * map->map_y);
 		}
 	}
-	// map->color_tab_grass = malloc(sizeof(sfColor*) * map->map_x);
-	// map->color_tab_dirt = malloc(sizeof(sfColor*) * map->map_x);
-	// map->color_tab_stone = malloc(sizeof(sfColor*) * map->map_x);
-	// for (int i = 0; i < map->map_x; i++) {
-	// 	map->color_tab_grass[i] = malloc(sizeof(sfColor) * map->map_y);
-	// 	map->color_tab_dirt[i] = malloc(sizeof(sfColor) * map->map_y);
-	// 	map->color_tab_stone[i] = malloc(sizeof(sfColor) * map->map_y);
-	// }
 	init_color_tab(map);
 }
 

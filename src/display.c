@@ -54,6 +54,17 @@ void	draw_vertex_array(sfRenderWindow *window, sfVector2f **map_2d, int i, int j
 	}
 }
 
+void	draw_bordermap()
+{
+	// for (int i = 0; i < map->map_x; i++) {
+	// 	for (int e = 0; e < map->map_y; e++) {
+	// 		if (i == 0 || i == map->map_x || e == 0 || e == map->map_y) {
+	//
+	// 		}
+	// 	}
+	// }
+}
+
 void	draw_2d_map(sfRenderWindow *window, map_t *map, settings_t *stg)
 {
 	// sfTexture *grass= sfTexture_createFromFile("assets/grass1.png", NULL);

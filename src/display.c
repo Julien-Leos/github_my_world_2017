@@ -61,7 +61,7 @@ void	draw_quads(map_t *map, sfRenderWindow *win, sfRenderStates *st, V2I crd)
 	if (crd.x < map->map_x - 1 && crd.y < map->map_y - 1) {
 		tmp = create_quads(vector_tab,
 			select_color(map, crd.x, crd.y, st));
-		RW_DVA(win, tmp, st);
+		RW_DVA(win, tmp, NULL); //change NULL in st to display textures.
 		sfVertexArray_destroy(tmp);
 	}
 	draw_lines(map, win, crd, vector_tab);

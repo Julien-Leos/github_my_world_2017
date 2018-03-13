@@ -11,7 +11,16 @@ SRC	=		src/create.c \
 			src/display.c \
 			src/toolbox.c \
 			src/get_next_line.c \
-			src/my_getnbr.c
+			src/noise_test.c	\
+			src/my_getnbr.c \
+			src/events.c \
+			src/events_keys.c \
+			src/init.c \
+			src/square.c \
+			src/brush.c \
+			src/draw.c \
+			src/textbox.c \
+			src/utilities.c \
 
 UT_SRC	=	tests/main_test.c
 
@@ -21,16 +30,19 @@ UT_OBJ	=	$(SRC:.c=.o) $(UT_SRC:.c=.o)
 
 CFLAGS	=	-Wextra -W -Wall -I ./include/ -lcsfml-graphics -lcsfml-window -lcsfml-system -lcsfml-audio -g3 -lm
 
-LDFLAGS	=
+MLFLAGS	=	-Wextra -W -Wall -I ./include/ -lc_graph_prog -g3 -lm
 
-NAME	=	My_world
+NAME	=	my_world
 
 CC	=	gcc
 
 all:	$(NAME)
 
 $(NAME):	$(OBJ)
-		$(CC) -o $(NAME) $(OBJ) $(CFLAGS)
+		$(CC) -o $(NAME) $(OBJ) $(MLFLAGS)
+
+dev:	$(OBJ)
+	$(CC) -o $(NAME) $(OBJ) $(CFLAGS)
 
 clean:
 	rm -f $(OBJ)

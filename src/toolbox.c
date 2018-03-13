@@ -2,47 +2,18 @@
 ** EPITECH PROJECT, 2018
 ** Project My_world
 ** File description:
-** Main file.
+** toolbox
 */
 
 #include "main.h"
-
-int my_putstrfd(int fd, char *str)
-{
-	int i = 0;
-	while (str[i] != '\0') {
-		write(fd, &str[i], 1);
-		i++;
-	}
-	return (0);
-}
-
-char	*my_itoa(float nb)
-{
-	int len = 0;
-	char *str;
-	float tmp = nb;
-
-	while (tmp > 0) {
-		tmp /= 10;
-		len++;
-	}
-	str = malloc(sizeof(*str) * (len + 1));
-	str[len] = '\0';
-	while (len--) {
-		str[len] = (int)nb % 10  + '0';
-		nb /= 10;
-	}
-	return (str);
-}
 
 int load(all_t *all)
 {
 	int fd = open("save.txt", O_RDONLY);
 	if (fd == -1)
 		return -1;
-	for (int i = 0; i < MAP_X; i++) {
-		for (int j = 0; j < MAP_Y - 1 ; j++)
+	for (int i = 0; i < all->map->map_x; i++) {
+		for (int j = 0; j < all->map->map_y - 1 ; j++)
 			all->map->map_3d[i][j] = my_getnbr(get_next_line(fd));
 	}
 	return (0);
@@ -55,8 +26,8 @@ int save(all_t *all)
 		return -1;
 	close(fd);
 	fd = open("save.txt", O_WRONLY);
-	for (int i = 0; i < MAP_X; i++) {
-		for (int j = 0; j < MAP_Y - 1 ; j++) {
+	for (int i = 0; i < all->map->map_x; i++) {
+		for (int j = 0; j < all->map->map_y - 1 ; j++) {
 			my_putstrfd(fd, my_itoa(all->map->map_3d[i][j]));
 			write(fd, "\n", 1);
 		}
@@ -98,17 +69,39 @@ int	init_toolbox(all_t *all)
 	sfVector2f position = {125, 0};
 	sfVector2f size = {3, 1080};
 	all->button->rect = sfRectangleShape_create();
-	all->obj[0] = create_object(scale, "./save.png", pos);
-	all->obj[1] = create_object(scale, "./load.png", pos2);
-	all->obj[2] = create_object(scale, "./square.png", pos3);
-	all->obj[3] = create_object(scale, "./square.png", pos4);
-	all->obj[4] = create_object(scale, "./square.png", pos5);
-	all->obj[5] = create_object(scale, "./square.png", pos6);
-	all->obj[6] = create_object(scale, "./square.png", pos7);
-	all->obj[7] = create_object(scale, "./square.png", pos8);
+	all->button->text_one = sfRectangleShape_create();
+	all->button->text_two = sfRectangleShape_create();
+	all->button->text_three = sfRectangleShape_create();
+	all->button->text_four = sfRectangleShape_create();
+
+	all->obj[0] = create_object(scale, "./images/save.png", pos);
+	all->obj[1] = create_object(scale, "./images/load.png", pos2);
+	all->obj[2] = create_object(scale, "./images/up.png", pos3);
+	all->obj[3] = create_object(scale, "./images/down.png", pos4);
+	all->obj[4] = create_object(scale, "./images/level.png", pos5);
+	all->obj[5] = create_object(scale, "./images/square.png", pos6);
+	all->obj[6] = create_object(scale, "./images/square.png", pos7);
+	all->obj[7] = create_object(scale, "./images/square.png", pos8);
 
 	sfRectangleShape_setSize(all->button->rect, size);
 	sfRectangleShape_setPosition(all->button->rect, position);
 	sfRectangleShape_setFillColor(all->button->rect, sfWhite);
+
+	sfRectangleShape_setSize(all->button->text_one, (sfVector2f){3, 70});
+	sfRectangleShape_setPosition(all->button->text_one,(sfVector2f){1400, 10});
+	sfRectangleShape_setFillColor(all->button->text_one, sfWhite);
+
+	sfRectangleShape_setSize(all->button->text_two, (sfVector2f){3, 70});
+	sfRectangleShape_setPosition(all->button->text_two, (sfVector2f){1800, 10});
+	sfRectangleShape_setFillColor(all->button->text_two, sfWhite);
+
+	sfRectangleShape_setSize(all->button->text_three, (sfVector2f){400, 3});
+	sfRectangleShape_setPosition(all->button->text_three, (sfVector2f){1400, 10});
+	sfRectangleShape_setFillColor(all->button->text_three, sfWhite);
+
+	sfRectangleShape_setSize(all->button->text_four, (sfVector2f){403, 3});
+	sfRectangleShape_setPosition(all->button->text_four, (sfVector2f){1400, 80});
+	sfRectangleShape_setFillColor(all->button->text_four, sfWhite);
+
 	return (0);
 }

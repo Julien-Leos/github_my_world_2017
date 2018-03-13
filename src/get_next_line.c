@@ -10,16 +10,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/get_next_line.h"
-
-int my_strlen(char *str)
-{
-	int a = 0;
-
-	while (str != NULL && str[a] != '\0')
-		a++;
-	return (a);
-}
+#include "get_next_line.h"
+#include "main.h"
 
 int test(char *total, int *stop)
 {
@@ -54,6 +46,7 @@ char *my_strcat(char *str, char *tmp, int *stop)
 	test(total, stop);
 	return (total);
 }
+
 char *checkend(char *str)
 {
 	int i = my_strlen(str);
@@ -63,6 +56,7 @@ char *checkend(char *str)
 		str[i + 1] = '\0';
 	return (str);
 }
+
 char *next(char *str)
 {
 	char *next;

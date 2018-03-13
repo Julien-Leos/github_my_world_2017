@@ -17,7 +17,7 @@ int	is_mouse_on_toolbox(sfVector2i mouse_pos)
 	return (0);
 }
 
-int my_power(int nb, int power)
+int	my_power(int nb, int power)
 {
 	int res = nb;
 
@@ -31,7 +31,16 @@ int my_power(int nb, int power)
 		return (0);
 }
 
-int my_putstrfd(int fd, char *str)
+int	my_strlen(char *str)
+{
+	int a = 0;
+
+	while (str != NULL && str[a] != '\0')
+		a++;
+	return (a);
+}
+
+int	my_putstrfd(int fd, char *str)
 {
 	int i = 0;
 	while (str[i] != '\0') {
@@ -41,21 +50,18 @@ int my_putstrfd(int fd, char *str)
 	return (0);
 }
 
-char	*my_itoa(float nb)
+char	*my_revstr (char *str)
 {
-	int len = 0;
-	char *str;
-	float tmp = nb;
+	int i = 0;
+	int len = my_strlen(str);
+	int mid = len / 2;
+	char x;
 
-	while (tmp > 0) {
-		tmp /= 10;
-		len++;
-	}
-	str = malloc(sizeof(*str) * (len + 1));
-	str[len] = '\0';
-	while (len--) {
-		str[len] = (int)nb % 10  + '0';
-		nb /= 10;
+	while (i < mid) {
+		x = str[i];
+		str[i] = str[len - 1 - i];
+		str[len - 1 - i] = x;
+		i++;
 	}
 	return (str);
 }

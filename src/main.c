@@ -40,25 +40,33 @@ void	which_button(window_t *win, obj_t *obj)
 	}
 }
 
-void	terraforming(window_t *win, map_t *map, settings_t *stg, brush_t *brs)
+void	terraforming(all_t *all, window_t *win, map_t *map, settings_t *stg)
 {
 	for (int i = 0; i < map->map_x; i++)
 		free (map->map_2d[i]);
 	free (map->map_2d);
 	map->map_2d =  create_2d_map(map->map_3d, map, stg);
 	draw_2d_map(win->window, map, stg);
-	select_brush(win, map, stg, brs);
+	display_brush(all);
 }
 
-int	main()
+int	main(int argc, char **argv)
 {
 	all_t *all = malloc(sizeof(*all));
+	int return_value = 0;
+
 	init_all(all);
+	if (argc > 1) {
+		if ((return_value = check_argv(argv, all)) == 84)
+			return (84);
+		else if (return_value == 1)
+			return (0);
+	}
 	while (sfRenderWindow_isOpen(all->win->window)) {
 		which_button(all->win, all->obj);
 		while (RW_PE(all->win->window, &(all->win->event)))
-			events(all, all->win, all->map, all->stg, all->brs);
-		terraforming(all->win, all->map, all->stg, all->brs);
+			event(all, all->win, all->map, all->stg);
+		terraforming(all, all->win, all->map, all->stg);
 		draw_toolbox(all->win, all->obj, all->button);
 		draw_window(all->win);
 	}

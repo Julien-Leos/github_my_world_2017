@@ -2,109 +2,70 @@
 ** EPITECH PROJECT, 2018
 ** Project My_world
 ** File description:
-** Main file.
+** create
 */
 
 #include "main.h"
 
-sfVertexArray *create_line(sfVector2f *point1, sfVector2f *point2)
+V2F project_iso_point(sfVector3f crd, settings_t *stg, map_t *map)
 {
-	sfVertexArray *vertex_array = sfVertexArray_create();
-	sfVertex vertex1 = {.position = *point1, .color = sfWhite};
-	sfVertex vertex2 = {.position = *point2, .color = sfWhite};
-
-	sfVertexArray_append(vertex_array, vertex1);
-	sfVertexArray_append(vertex_array, vertex2);
-	sfVertexArray_setPrimitiveType(vertex_array, sfLinesStrip);
-	return (vertex_array);
-}
-
-sfVertexArray *create_quads(sfVector2f *point1, sfVector2f *point2,
-	sfVector2f *point3, sfVector2f *point4, sfColor color)
-{
-	sfVertexArray *vertex_array = sfVertexArray_create();
-	sfVertex vertex1 = {.position = *point1, .color = color, .texCoords = (sfVector2f){0, 0}};
-	sfVertex vertex2 = {.position = *point2, .color = color, .texCoords = (sfVector2f){0, SCALING_Y}};
-	sfVertex vertex3 = {.position = *point3, .color = color, .texCoords = (sfVector2f){SCALING_X, SCALING_Y}};
-	sfVertex vertex4 = {.position = *point4, .color = color, .texCoords = (sfVector2f){SCALING_X, 0}};
-
-	sfVertexArray_append(vertex_array, vertex1);
-	sfVertexArray_append(vertex_array, vertex2);
-	sfVertexArray_append(vertex_array, vertex3);
-	sfVertexArray_append(vertex_array, vertex4);
-	sfVertexArray_setPrimitiveType(vertex_array, sfQuads);
-	return (vertex_array);
-}
-
-sfVector2f project_iso_point(int x, int y, int z, settings_t *stg, map_t *map)
-{
-	sfVector2f vec = {0, 0};
-	double rotation = (stg->rotation / 180.0 * M_PI);
-	double inclinaison = (stg->inclinaison / 180.0 * M_PI);
-	int x_origine = 0;
-	int y_origine = 0;
+	V2F vec = {0, 0};
+	double rt = (stg->rotation / 180.0 * M_PI);
+	double ic = (stg->inclinaison / 180.0 * M_PI);
+	int x0 = 0;
+	int y0 = 0;
 
 	if (map->map_x % 2 == 0) {
-		x_origine = ((SCALING_X * stg->zoom * (map->map_x - 1)) / 2);
-		y_origine = ((SCALING_Y * stg->zoom * (map->map_y - 1)) / 2);
+		x0 = ((SCALING_X * stg->zoom * (map->map_x - 1)) / 2);
+		y0 = ((SCALING_Y * stg->zoom * (map->map_y - 1)) / 2);
 	} else {
-		x_origine = ((SCALING_X * stg->zoom * map->map_x) / 2);
-		y_origine = ((SCALING_Y * stg->zoom * map->map_y) / 2);
+		x0 = ((SCALING_X * stg->zoom * map->map_x) / 2);
+		y0 = ((SCALING_Y * stg->zoom * map->map_y) / 2);
 	}
-	vec.x = (x - x_origine) * cos (rotation) + (y - y_origine) * sin (rotation) + x_origine;
-	vec.y = - (x - x_origine) * sin (rotation) + (y - y_origine) * cos (rotation) + y_origine;
-	vec.y = (vec.y - y_origine) * cos (inclinaison) - (z) * sin (inclinaison) + y_origine;
-	vec.x += (1920 / 2) - x_origine + stg->offset_x;
-	vec.y += (1080 / 2) - y_origine + stg->offset_y;
+	vec.x = (crd.x - x0) * cos (rt) + (crd.y - y0) * sin (rt) + x0;
+	vec.y = - (crd.x - x0) * sin (rt) + (crd.y - y0) * cos (rt) + y0;
+	vec.y = (vec.y - y0) * cos (ic) - (crd.z) * sin (ic) + y0;
+	vec.x += (1920 / 2) - x0 + stg->offset_x;
+	vec.y += (1080 / 2) - y0 + stg->offset_y;
 	return(vec);
 }
 
-float	**create_3d_map(map_t *map)
+void	create_perlin_map_sub(float *value, unsigned int *rdm, int i, int j)
 {
-	float **map_3d = malloc(sizeof(int*) * (map->map_x + 1000));
-	// int octave = 4;
-	// float persistance = 0.57;
-	// float lacunarity = 1.72;
-	// float amplitude = 0;
-	// float frequency = 0;
-	// float noise_height = 0;
-	// float perlin_value = 0;
-	// float sample_x = 0;
-	// float sample_y = 0;
+	value[2] = 1;
+	value[3] = 1;
+	value[4] = 0;
+	value[8] = 4;
+	for (int e = 0; e < value[8]; e++) {
+		value[6] = (i + 0.5) / SCALING_X;
+		value[7] = (j + 0.5) / SCALING_Y;
+		value[5] = get_perlin_noise_value(value[6], value[7], rdm);
+		value[4] += value[5] * value[2];
+		value[2] *= value[0];
+		value[3] *= value[1];
+	}
+}
 
+float	**create_perlin_map(map_t *map)
+{
+	float **map_3d = malloc(sizeof(int*) * map->map_x);
+	unsigned int *rdm = generate_randomised_tab();
+	float *value = malloc(sizeof(float) * 9);
+
+	value[0] = 0.57;
+	value[1] = 1.72;
+	value[2] = 0;
+	value[3] = 0;
+	value[4] = 0;
+	value[5] = 0;
+	value[6] = 0;
+	value[7] = 0;
 	for (int i = 0; i < map->map_x; i++) {
-		map_3d[i] = malloc(sizeof(int) * (map->map_y + 1000));
+		map_3d[i] = malloc(sizeof(int) * map->map_y);
 		for (int j = 0; j < map->map_y; j++) {
-			map_3d[i][j] = 0;
-			// amplitude = 1;
-			// frequency = 1;
-			// noise_height = 0;
-			// for (int e = 0; e < octave; e++) {
-			// 	sample_x = (i + 0.5) / SCALING_X;
-			// 	sample_y = (j + 0.5) / SCALING_Y;
-			//
-			// 	perlin_value = Get2DPerlinNoiseValue(sample_x, sample_y);
-			// 	noise_height += perlin_value * amplitude;
-			//
-			// 	amplitude *= persistance;
-			// 	frequency *= lacunarity;
-			// }
-			// map_3d[i][j] = noise_height * 20;
+			create_perlin_map_sub(value, rdm, i, j);
+			map_3d[i][j] = value[4] * 30;
 		}
 	}
 	return (map_3d);
-}
-
-sfVector2f **create_2d_map(float **map_3d, map_t *map, settings_t *stg)
-{
-	sfVector2f **map_2d = malloc(sizeof(sfVector2f*) * (map->map_x + 1000));
-
-	for (int j = 0; j < map->map_x; j++) {
-		map_2d[j] = malloc(sizeof(sfVector2f) * (map->map_y + 1000));
-		for (int i = 0; i < map->map_y; i++) {
-			map_2d[j][i] = project_iso_point(i * SCALING_X * stg->zoom,
-				j * SCALING_Y * stg->zoom, map_3d[j][i] * SCALING_Z *stg->zoom, stg, map);
-		}
-	}
-	return (map_2d);
 }

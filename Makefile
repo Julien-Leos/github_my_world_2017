@@ -16,11 +16,28 @@ SRC	=		src/create.c \
 			src/events.c \
 			src/events_keys.c \
 			src/init.c \
-			src/square.c \
-			src/brush.c \
+			src/init2.c \
+			src/brush/brush_tools.c \
+			src/brush/display_brush.c	\
+			src/brush/select_brush_corner.c	\
+			src/brush/level_brush.c	\
+			src/brush/up_brush.c	\
+			src/brush/down_brush.c	\
 			src/draw.c \
 			src/textbox.c \
 			src/utilities.c \
+			src/increase_event.c \
+			src/decrease_event.c \
+			src/save_and_load.c \
+			src/textbox_enter.c \
+			src/my_printf.c \
+			src/arguments.c \
+			src/textbox_error.c \
+			src/utilities2.c \
+			src/check_save.c \
+			src/create_map_and_form.c \
+			src/rotation.c \
+			src/switch_tools.c
 
 UT_SRC	=	tests/main_test.c
 
